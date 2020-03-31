@@ -1,17 +1,19 @@
 package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectLibrary;
 
+import android.support.annotation.NonNull;
+
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.SampleMecanumDriveBase;
-import org.jetbrains.annotations.NotNull;
+
+import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants.encoderTicksToInches;
 
 public class ConfigurationRR extends SampleMecanumDriveBase {
 
@@ -93,7 +95,7 @@ public class ConfigurationRR extends SampleMecanumDriveBase {
         //No idea if this all works
     }
 
-    @NotNull
+    @NonNull
     @Override
     public List<Double> getWheelVelocities() {
         List<Double> v = new ArrayList<>();
@@ -104,7 +106,7 @@ public class ConfigurationRR extends SampleMecanumDriveBase {
         return v;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public List<Double> getWheelPositions() {
         List<Double> v = new ArrayList<>();

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.RRTests;
+package org.firstinspires.ftc.teamcode.Autonomous.RRTests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -18,14 +18,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.DriveConstants;
-import org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants;
+import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveREV;
 
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants.*;
+
 
 /*
  * This routine is designed to tune the PID coefficients used by the REV Expansion Hubs for closed-

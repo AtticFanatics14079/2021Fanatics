@@ -1,12 +1,11 @@
-package org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.RRTests;
+package org.firstinspires.ftc.teamcode.Autonomous.RRTests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.SampleMecanumDriveREV;
-
+import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveREV;
 /*
  * This is an example of a more complex path to really test the tuning.
  */

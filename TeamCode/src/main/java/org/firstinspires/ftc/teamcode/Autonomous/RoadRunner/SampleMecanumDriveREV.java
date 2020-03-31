@@ -10,16 +10,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Utils.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.Utils.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.AtticFanatics2020SeasonPrograms.Referenced.RoadRunner.DriveConstants.getMotorVelocityF;
+import static org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants.*;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware. If your hardware configuration
