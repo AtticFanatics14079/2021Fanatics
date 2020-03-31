@@ -1,0 +1,16 @@
+- Add 4th PID term that is max velocity (default 3000)
+- Fix PositionThread to work with groups using tolerance
+- Get IMU set up, possibly incorporate IMU turning
+- Get touch sensors set up
+- Get odometry set up
+- At this point, clean up recording and re-running software. Should not be much work, but optimize and use new DriveObjects more liberally
+- Add ways for recording software to measure target positions easier
+
+Known potential issues:
+- No way to recognize end of servo movement (?)
+- Starting a thread while one is already active will result in weird results for a part (!)
+
+Shortcuts:
+- -> means implies
+- (?) -> not sure if needed
+- (!) -> done, but unsure if works
