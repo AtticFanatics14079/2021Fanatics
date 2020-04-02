@@ -64,7 +64,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         motors.get(2).setDirection(DcMotorSimple.Direction.REVERSE);
         motors.get(3).setDirection(DcMotorSimple.Direction.REVERSE);
         // TODO: if desired, use setLocalizer() to change the localization method
-        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
     }
 
     @Override
