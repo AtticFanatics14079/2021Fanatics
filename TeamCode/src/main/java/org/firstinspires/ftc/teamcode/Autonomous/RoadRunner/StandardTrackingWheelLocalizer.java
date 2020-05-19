@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.Arrays;
@@ -26,13 +27,13 @@ import java.util.List;
  * Note: this could be optimized significantly with REV bulk reads
  */
 @Config
-public class StandardTrackingWheelLocalizer extends FanaticsThreeWheelTrackingLocalizer {
+public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
-    public static double WHEEL_RADIUS = 0.7442; // in
+    public static double WHEEL_RADIUS = 0.75; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 9.9375;
-    public static double FORWARD_OFFSET = 13.375; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 9.875;
+    public static double FORWARD_OFFSET = 13.5; // in; offset of the lateral wheel
 
     private DcMotor leftEncoder, rightEncoder, frontEncoder;
 
@@ -44,6 +45,7 @@ public class StandardTrackingWheelLocalizer extends FanaticsThreeWheelTrackingLo
         ));
 
         leftEncoder = hardwareMap.dcMotor.get("leftEncoder");
+        leftEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
         rightEncoder = hardwareMap.dcMotor.get("rightEncoder");
         frontEncoder = hardwareMap.dcMotor.get("frontEncoder");
     }
