@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.commons.math3.analysis;
+//package org.apache.commons.math3.analysis;
 
 /**
  * Extension of {@link MultivariateVectorFunction} representing a differentiable
@@ -23,7 +23,7 @@ package org.apache.commons.math3.analysis;
  * @since 2.0
  * @deprecated as of 3.1 replaced by {@link org.apache.commons.math3.analysis.differentiation.MultivariateDifferentiableVectorFunction}
  */
-@Deprecated
+/*@Deprecated
 public interface DifferentiableMultivariateVectorFunction
     extends MultivariateVectorFunction {
 
@@ -31,6 +31,6 @@ public interface DifferentiableMultivariateVectorFunction
      * Returns the jacobian function.
      * @return the jacobian function
      */
-    MultivariateMatrixFunction jacobian();
+    //MultivariateMatrixFunction jacobian();
 
-}
+//}

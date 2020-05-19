@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.math3.analysis;
+//package org.apache.commons.math3.analysis;
 
 /**
  * Extension of {@link UnivariateVectorFunction} representing a differentiable univariate vectorial function.
@@ -22,7 +22,7 @@ package org.apache.commons.math3.analysis;
  * @since 2.0
  * @deprecated as of 3.1 replaced by {@link org.apache.commons.math3.analysis.differentiation.UnivariateDifferentiableVectorFunction}
  */
-@Deprecated
+/*@Deprecated
 public interface DifferentiableUnivariateVectorFunction
     extends UnivariateVectorFunction {
 
@@ -31,6 +31,6 @@ public interface DifferentiableUnivariateVectorFunction
      *
      * @return  the derivative function
      */
-    UnivariateVectorFunction derivative();
+    //UnivariateVectorFunction derivative();
 
-}
+//}

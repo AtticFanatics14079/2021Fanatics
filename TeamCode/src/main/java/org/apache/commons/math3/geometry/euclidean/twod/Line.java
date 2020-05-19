@@ -16,7 +16,7 @@
  */
 package org.apache.commons.math3.geometry.euclidean.twod;
 
-import java.awt.geom.AffineTransform;
+//import java.awt.geom.AffineTransform;
 
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.exception.util.LocalizedFormats;
@@ -449,13 +449,14 @@ public class Line implements Hyperplane<Euclidean2D>, Embedding<Euclidean2D, Euc
      * @exception MathIllegalArgumentException if the transform is non invertible
      * @deprecated as of 3.6, replaced with {@link #getTransform(double, double, double, double, double, double)}
      */
-    @Deprecated
+    /*@Deprecated
     public static Transform<Euclidean2D, Euclidean1D> getTransform(final AffineTransform transform)
         throws MathIllegalArgumentException {
         final double[] m = new double[6];
         transform.getMatrix(m);
         return new LineTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
     }
+     */
 
     /** Get a {@link org.apache.commons.math3.geometry.partitioning.Transform
      * Transform} embedding an affine transform.

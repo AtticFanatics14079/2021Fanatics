@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.commons.math3.analysis;
+//package org.apache.commons.math3.analysis;
 
 /**
  * Extension of {@link MultivariateFunction} representing a differentiable
@@ -23,7 +23,7 @@ package org.apache.commons.math3.analysis;
  * @since 2.0
  * @deprecated as of 3.1 replaced by {@link org.apache.commons.math3.analysis.differentiation.MultivariateDifferentiableFunction}
  */
-@Deprecated
+/*@Deprecated
 public interface DifferentiableMultivariateFunction extends MultivariateFunction {
 
     /**
@@ -38,7 +38,7 @@ public interface DifferentiableMultivariateFunction extends MultivariateFunction
      * derivative is computed
      * @return the partial derivative function with respect to k<sup>th</sup> point coordinate
      */
-    MultivariateFunction partialDerivative(int k);
+    //MultivariateFunction partialDerivative(int k);
 
     /**
      * Returns the gradient function.
@@ -47,6 +47,6 @@ public interface DifferentiableMultivariateFunction extends MultivariateFunction
      * which will compute only the specified component.</p>
      * @return the gradient function
      */
-    MultivariateVectorFunction gradient();
+    //MultivariateVectorFunction gradient();
 
-}
+//}

@@ -31,8 +31,8 @@ public class StandardTrackingWheelLocalizer extends FanaticsThreeWheelTrackingLo
     public static double WHEEL_RADIUS = 0.7442; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 10.5;
-    public static double FORWARD_OFFSET = -8.5; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 9.9375;
+    public static double FORWARD_OFFSET = 13.375; // in; offset of the lateral wheel
 
     private DcMotor leftEncoder, rightEncoder, frontEncoder;
 
