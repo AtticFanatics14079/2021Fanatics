@@ -22,7 +22,7 @@ public class SampleTeleOp extends LinearOpMode {
         hardware.start();
         hardware.startTime(time);
         while(!isStopRequested()){
-            if(time.milliseconds() - lastTime >= 1) {
+            if(time.milliseconds() - lastTime >= 5) {
                 lastTime = time.milliseconds();
                 getInput();
             }
@@ -39,8 +39,8 @@ public class SampleTeleOp extends LinearOpMode {
             Sequence t = new Sequence(() -> hardware.config.ExtendGripper.set(1000), s);
             Thread n = new Thread(t);
             n.run();
-        }
-        What this should do is extend to 1000, then extend back when it's done. */
+        } */
+        //What this should do is extend to 1000, then extend back when it's done.
     }
 
     private void setPower(double px, double py, double pa){
@@ -58,7 +58,7 @@ public class SampleTeleOp extends LinearOpMode {
         p4 /= max;
         hardware.config.backLeft.setPower(p1 * 2700); //To switch to velo, random number atm
         hardware.config.frontLeft.setPower(p2 * 2700);
-        hardware.config.frontRight.setPower(p3 * 27000);
+        hardware.config.frontRight.setPower(p3 * 2700);
         hardware.config.backRight.setPower(p4 * 2700);
     }
 }

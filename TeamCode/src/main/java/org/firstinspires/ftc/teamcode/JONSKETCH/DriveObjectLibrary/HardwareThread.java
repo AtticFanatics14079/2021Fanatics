@@ -5,6 +5,7 @@ import android.util.Pair;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -12,7 +13,7 @@ public class HardwareThread extends Thread {
 
     ElapsedTime time;
     private ValueStorage vals;
-    Pair<Double, Double>[] hardwareVals; //See hardwareValues in ValueStorage for each value.
+    Double[][] hardwareVals; //See hardwareValues in ValueStorage for each value.
     Boolean[] changedParts; //See hardwareValues in ValueStorage for each value.
     Double[] runVals; //See hardwareValues in ValueStorage for each value.
     //public Configuration config;
@@ -26,7 +27,7 @@ public class HardwareThread extends Thread {
         config = new ConfigurationRR(hwMap, vals);
         vals.setup(config.hardware.size());
         runVals = new Double[config.hardware.size()];
-        hardwareVals = new Pair[config.hardware.size()];
+        hardwareVals = new Double[config.hardware.size()][vals.maxValues];
         changedParts = new Boolean[config.hardware.size()];
         Arrays.fill(changedParts, false);
         Arrays.fill(runVals, 0.0);
@@ -68,7 +69,7 @@ public class HardwareThread extends Thread {
         this.changedParts = changedParts.clone();
 
         for(int i = 0; i < config.hardware.size(); i++) {
-            if (changedParts[i])
+            if (this.changedParts[i])
                 hardwareVals[i] = config.hardware.get(i).getHardware();
         }
     }

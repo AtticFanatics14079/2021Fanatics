@@ -213,30 +213,30 @@ public class DriveObject {
         return null;
     }
 
-    public Pair<Double, Double> getHardware(){
+    public Double[] getHardware(){
         switch(thisType){
             case DcMotorImplEx:
                 switch(thisClass){
                     case toPosition:
-                        return new Pair<>((double) motor.getCurrentPosition(), motor.getVelocity());
+                        return new Double[]{(double) motor.getCurrentPosition(), motor.getVelocity()};
                     case Drivetrain:
-                        return new Pair<>(motor.getVelocity(), (double) motor.getCurrentPosition());
+                        return new Double[]{motor.getVelocity(), (double) motor.getCurrentPosition()};
                     case Default:
-                        return new Pair<>(motor.getVelocity(), (double) motor.getCurrentPosition());
+                        return new Double[]{motor.getVelocity(), (double) motor.getCurrentPosition()};
                     default:
                         System.out.println("Invalid type/classifier combination.");
                         return null;
                 }
             case Servo:
-                return new Pair<>(servo.getPosition(), null);
+                return new Double[]{servo.getPosition(), null}; //Fill in null for all values past usable and before reaching maxValues in ValueStorage
             case CRServo:
-                return new Pair<>(crservo.getPower(), null);
+                return new Double[]{crservo.getPower(), null};
             case IMU:
-                return new Pair<>((double) imu.getAngularOrientation().firstAngle, null); //Can add a second return here
+                return new Double[]{(double) imu.getAngularOrientation().firstAngle, (double) imu.getAngularOrientation().secondAngle}; //Can add more returns here
             case TouchSensor:
-                return new Pair<>(touch.getValue(), null);
+                return new Double[]{touch.getValue(), null};
             case Odometry:
-                return new Pair<>((double) motor.getCurrentPosition(), null); //May be able to return velocity here, not sure if rolling works for velocity.
+                return new Double[]{(double) motor.getCurrentPosition(), null}; //May be able to return velocity here, not sure if rolling works for velocity.
             default:
                 System.out.println("Invalid type, returning null.");
                 return null;
@@ -244,7 +244,8 @@ public class DriveObject {
     }
 
     public Double get(){
-        switch(thisType){
+        return vals.hardware(false, null)[partNum][0];
+        /*switch(thisType){
             case DcMotorImplEx:
                 switch(thisClass){
                     case toPosition:
@@ -267,41 +268,53 @@ public class DriveObject {
                 return vals.hardware(false, null)[partNum].first;
             case Odometry:
                 return vals.hardware(false, null)[partNum].first;
+            default:
+                System.out.println("Invalid type, returning null.");
+                return null;
+        }
+
+         */
+    }
+
+    public Double get(int VariableNum){
+        return vals.hardware(false, null)[partNum][VariableNum];
+    }
+
+    public Double[] getAllVals(){
+        return vals.hardware(false, null)[partNum];
+    }
+
+    /*public Pair<Double, Double> getAllVals(){
+        switch(thisType){
+            case DcMotorImplEx:
+                switch(thisClass){
+                    case toPosition:
+                        return vals.hardware(false, null)[partNum];
+                    case Drivetrain:
+                        return vals.hardware(false, null)[partNum];
+                    case Default:
+                        return vals.hardware(false, null)[partNum];
+                    default:
+                        System.out.println("Invalid type/classifier combination.");
+                        return null;
+                }
+            case Servo:
+                return vals.hardware(false, null)[partNum];
+            case CRServo:
+                return vals.hardware(false, null)[partNum];
+            case IMU:
+                return vals.hardware(false, null)[partNum];
+            case TouchSensor:
+                return vals.hardware(false, null)[partNum];
+            case Odometry:
+                return vals.hardware(false, null)[partNum];
             default:
                 System.out.println("Invalid type, returning null.");
                 return null;
         }
     }
 
-    public Pair<Double, Double> getAllVals(){
-        switch(thisType){
-            case DcMotorImplEx:
-                switch(thisClass){
-                    case toPosition:
-                        return vals.hardware(false, null)[partNum];
-                    case Drivetrain:
-                        return vals.hardware(false, null)[partNum];
-                    case Default:
-                        return vals.hardware(false, null)[partNum];
-                    default:
-                        System.out.println("Invalid type/classifier combination.");
-                        return null;
-                }
-            case Servo:
-                return vals.hardware(false, null)[partNum];
-            case CRServo:
-                return vals.hardware(false, null)[partNum];
-            case IMU:
-                return vals.hardware(false, null)[partNum];
-            case TouchSensor:
-                return vals.hardware(false, null)[partNum];
-            case Odometry:
-                return vals.hardware(false, null)[partNum];
-            default:
-                System.out.println("Invalid type, returning null.");
-                return null;
-        }
-    }
+     */
 
     public void reverse(){
         switch(thisType){

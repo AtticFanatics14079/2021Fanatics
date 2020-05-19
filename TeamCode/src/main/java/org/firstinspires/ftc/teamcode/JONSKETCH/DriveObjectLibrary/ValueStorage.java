@@ -1,16 +1,18 @@
 package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectLibrary;
 
-
-
 import android.util.Pair;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ValueStorage {
 
     private volatile double Time = 0.0; //In milliseconds
 
-    private Pair<Double, Double>[] hardwareValues;
+    public final int maxValues = 2; //Change to match the maximum number of variables a
+    //DriveObject could take (e.g. if IMU takes 3 values and DcMotors take 4, set to 4).
+
+    private Double[][] hardwareValues;
 
     private double[] runValues; //Same values as above, but used after algorithms
     //determine what the power should be.
@@ -22,14 +24,15 @@ public class ValueStorage {
 
     public void setup(int size){
         runValues = new double[size];
-        hardwareValues = new Pair[size];
+        hardwareValues = new Double[size][maxValues];
         changedParts = new Boolean[size];
         System.out.println(changedParts.length);
     }
 
-    public synchronized Pair<Double, Double>[] hardware(boolean writing, Pair[] values){
+    public synchronized Double[][] hardware(boolean writing, Double[][] values){
         if(writing) {
-            hardwareValues = values.clone();
+            for(int i = 0; i < values.length; i++)
+                hardwareValues[i] = values[i].clone();
             return null;
         }
         return hardwareValues;

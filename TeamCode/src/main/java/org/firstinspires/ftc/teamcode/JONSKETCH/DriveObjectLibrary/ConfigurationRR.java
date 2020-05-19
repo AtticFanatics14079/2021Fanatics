@@ -110,10 +110,10 @@ public class ConfigurationRR extends SampleMecanumDriveBase {
     @Override
     public List<Double> getWheelPositions() {
         List<Double> v = new ArrayList<>();
-        v.add(encoderTicksToInches(hardware.get(0).getAllVals().second));
-        v.add(encoderTicksToInches(hardware.get(1).getAllVals().second));
-        v.add(encoderTicksToInches(hardware.get(2).getAllVals().second));
-        v.add(encoderTicksToInches(hardware.get(3).getAllVals().second));
+        v.add(encoderTicksToInches(hardware.get(0).get(1)));
+        v.add(encoderTicksToInches(hardware.get(1).get(1)));
+        v.add(encoderTicksToInches(hardware.get(2).get(1)));
+        v.add(encoderTicksToInches(hardware.get(3).get(1)));
         return v;
     }
 
