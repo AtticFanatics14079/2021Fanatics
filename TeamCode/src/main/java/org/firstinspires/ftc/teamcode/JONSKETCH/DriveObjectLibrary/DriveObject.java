@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -25,8 +26,8 @@ public class DriveObject {
 
     private int partNum;
     private Double[] pid = {30.0, 0.0, 0.0, 3000.0}; //Default values
-    private PositionThread posThread;
-    private TimeThread timeThread;
+    private PositionThread posThread = new PositionThread();
+    private TimeThread timeThread = new TimeThread();
     private static ValueStorage vals;
 
     private String objectName;
@@ -332,6 +333,13 @@ public class DriveObject {
         }
     }
 
+    public void resetEncoders(){
+        if(thisType == type.DcMotorImplEx) {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+
     public void setPower(double Power){
         Double[] p = new Double[partNum + 1];
         Boolean[] b = new Boolean[partNum + 1];
@@ -346,12 +354,15 @@ public class DriveObject {
     }
 
     public Thread setPower(double Power, double Seconds){
-        if(thisClass != classification.Default && thisClass != classification.Drivetrain) {
+        /*if(!(thisClass == classification.Default || thisClass == classification.Drivetrain)) {
             System.out.println("Invalid type for setting power.");
             return null;
         }
+
+         */
         timeThread = new TimeThread(Power, Seconds, this);
         timeThread.start();
+        System.out.println(timeThread.isAlive());
         return timeThread;
     }
 
@@ -374,8 +385,8 @@ public class DriveObject {
                 vals.runValues(true, p);
                 return null;
             case DcMotorImplEx:
-                //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
-                if(posThread.isAlive()) posThread.stopPart(partNum);
+                //if(pos.isAlive()) pos.Stop(); //Currently starting a new thread breaks a part
+                if(posThread.isAlive()) posThread.Stop();
                 posThread = new PositionThread((int) targetPosition, maxSpeed, 50, this);
                 posThread.start();
                 return posThread;
@@ -383,7 +394,7 @@ public class DriveObject {
         return null;
     }
 
-    public Thread setTargetPosition(double targetPosition, double tolerance, double maxSpeed){
+    public Thread setTargetPosition(double targetPosition, double maxSpeed, double tolerance){
         if(thisClass != classification.toPosition){
             System.out.println("Invalid call.");
             return null;
@@ -402,8 +413,8 @@ public class DriveObject {
                 vals.runValues(true, p);
                 return null;
             case DcMotorImplEx:
-                //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
-                if(posThread.isAlive()) posThread.stopPart(partNum);
+                //if(pos.isAlive()) pos.Stop(); //Currently starting a new thread breaks a part
+                if(posThread.isAlive()) posThread.Stop();
                 posThread = new PositionThread((int) targetPosition, maxSpeed, tolerance, this);
                 posThread.start();
                 return posThread;
@@ -411,23 +422,23 @@ public class DriveObject {
         return null;
     }
 
-    public Thread groupSetTargetPosition(int targetPos, double maxSpeed, DriveObject ...drive){
+    public Thread groupSetTargetPosition(int targetPos, double maxSpeed, double tolerance, DriveObject ...drive){
         for(DriveObject d : drive) if(d.getClassification() != classification.toPosition) return null;
-        //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
-        if(posThread.isAlive()) posThread.stopPart(partNum);
-        posThread = new PositionThread(targetPos, maxSpeed, drive);
+        //if(pos.isAlive()) pos.Stop(); //Currently starting a new thread breaks a part
+        if(posThread.isAlive()) posThread.Stop();
+        posThread = new PositionThread(targetPos, maxSpeed, tolerance, drive);
         posThread.start();
         return posThread;
     }
 
-    public Thread groupSetTargetPosition(int targetPos, double maxSpeed, ArrayList<DriveObject> drive){
+    public Thread groupSetTargetPosition(int targetPos, double maxSpeed, double tolerance, ArrayList<DriveObject> drive){
         for(DriveObject d : drive) if(d.getClassification() != classification.toPosition) return null;
-        //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
-        if(posThread.isAlive()) posThread.stopPart(partNum);
+        //if(pos.isAlive()) pos.Stop(); //Currently starting a new thread breaks a part
+        if(posThread.isAlive()) posThread.Stop();
         DriveObject[] d = new DriveObject[drive.size()];
         int i = 0;
         for(DriveObject a : drive) d[i++] = a;
-        posThread = new PositionThread(targetPos, maxSpeed, d);
+        posThread = new PositionThread(targetPos, maxSpeed, tolerance, d);
         posThread.start();
         return posThread;
     }
@@ -471,7 +482,7 @@ public class DriveObject {
     }
 
     public void endAllThreads(){
-        if(posThread.isAlive()) posThread.stop();
-        if(timeThread.isAlive()) timeThread.stop();
+        if(posThread.isAlive()) posThread.Stop();
+        //if(timeThread.isAlive()) timeThread.Stop();
     }
 }

@@ -15,7 +15,7 @@ public class SampleTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hardware = new HardwareThread(new ValueStorage(), hardwareMap);
-        hardware.config.ExtendGripper.setPID(2, 0, 0); //Gonna need to mess with this one
+        //hardware.config.ExtendGripper.setPID(2, 0, 0); //Gonna need to mess with this one
         waitForStart();
         ElapsedTime time = new ElapsedTime();
         double lastTime = time.milliseconds();
@@ -31,8 +31,8 @@ public class SampleTeleOp extends LinearOpMode {
 
     private void getInput(){
         setPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-        if(gamepad1.dpad_left) hardware.config.ExtendGripper.set(1000); //THIS MAY BE SKETCH BECAUSE BAD PIDs!!!
-        else if(gamepad1.dpad_right) hardware.config.ExtendGripper.set(0);
+        //if(gamepad1.dpad_left) hardware.config.ExtendGripper.set(1000); //THIS MAY BE SKETCH BECAUSE BAD PIDs!!!
+        //else if(gamepad1.dpad_right) hardware.config.ExtendGripper.set(0);
         /* Next step (once we figure out the PIDs)
         if(gamepad1.dpad_up) {
             Sequence s = new Sequence(() -> hardware.config.ExtendGripper.set(0), null);
@@ -56,9 +56,9 @@ public class SampleTeleOp extends LinearOpMode {
         p2 /= max;
         p3 /= max;
         p4 /= max;
-        hardware.config.backLeft.setPower(p1 * 2700); //To switch to velo, random number atm
-        hardware.config.frontLeft.setPower(p2 * 2700);
-        hardware.config.frontRight.setPower(p3 * 2700);
-        hardware.config.backRight.setPower(p4 * 2700);
+        //hardware.config.backLeft.setPower(p1 * 2700); //To switch to velo, random number atm
+        //hardware.config.frontLeft.setPower(p2 * 2700);
+        //hardware.config.frontRight.setPower(p3 * 2700);
+        //hardware.config.backRight.setPower(p4 * 2700);
     }
 }

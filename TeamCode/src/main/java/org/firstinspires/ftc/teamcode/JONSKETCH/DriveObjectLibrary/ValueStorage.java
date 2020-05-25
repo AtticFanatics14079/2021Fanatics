@@ -31,8 +31,9 @@ public class ValueStorage {
 
     public synchronized Double[][] hardware(boolean writing, Double[][] values){
         if(writing) {
-            for(int i = 0; i < values.length; i++)
+            for(int i = 0; i < values.length; i++) {
                 hardwareValues[i] = values[i].clone();
+            }
             return null;
         }
         return hardwareValues;

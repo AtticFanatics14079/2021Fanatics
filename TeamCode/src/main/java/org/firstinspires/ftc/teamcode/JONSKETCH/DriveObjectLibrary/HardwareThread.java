@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectLibrary;
 
 import android.util.Pair;
 
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -16,24 +17,29 @@ public class HardwareThread extends Thread {
     Double[][] hardwareVals; //See hardwareValues in ValueStorage for each value.
     Boolean[] changedParts; //See hardwareValues in ValueStorage for each value.
     Double[] runVals; //See hardwareValues in ValueStorage for each value.
-    //public Configuration config;
-    public ConfigurationRR config;
+    public Configuration config;
+    //public ConfigurationRR config;
     private volatile boolean stop;
     private boolean setTime = false;
     public double voltMult = 1, lastTime = 0;
 
     public HardwareThread(ValueStorage valStorage, HardwareMap hwMap){
         this.vals = valStorage;
-        config = new ConfigurationRR(hwMap, vals);
+        config = new Configuration(hwMap, vals);
+        //config = new ConfigurationRR(hwMap, vals);
         vals.setup(config.hardware.size());
+        Double[] temp = new Double[vals.maxValues];
         runVals = new Double[config.hardware.size()];
-        hardwareVals = new Double[config.hardware.size()][vals.maxValues];
+        hardwareVals = new Double[config.hardware.size()][temp.length];
         changedParts = new Boolean[config.hardware.size()];
         Arrays.fill(changedParts, false);
         Arrays.fill(runVals, 0.0);
+        Arrays.fill(temp, 0.0);
+        Arrays.fill(hardwareVals, temp);
         vals.time(true, 0.0);
         vals.changedParts(true, changedParts);
         vals.runValues(true, runVals);
+        vals.hardware(true, hardwareVals);
         //voltMult = 13.0/config.voltSense.getVoltage();
         config.setBulkCachingManual();
     }
@@ -49,7 +55,10 @@ public class HardwareThread extends Thread {
                 runHardware(vals.runValues(false, null), vals.changedParts(false, null));
             }
         }
-        for(DriveObject d : config.hardware) d.endAllThreads();
+        for(DriveObject d : config.hardware) {
+            d.endAllThreads();
+            if(d.getType() == DriveObject.type.DcMotorImplEx) d.resetEncoders();
+        }
     }
 
     public void startTime(ElapsedTime time){

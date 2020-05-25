@@ -32,7 +32,7 @@ public class Configuration {
         //Adding more later
 
         //Below are other configuration activities that are necessary for writing to file.
-        //allHubs = hwMap.getAll(LynxModule.class);
+        allHubs = hwMap.getAll(LynxModule.class);
 
         for (LynxModule module : allHubs) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);

@@ -5,27 +5,29 @@ public class TimeThread extends Thread{
     private double seconds, value, endVal;
     private DriveObject drive;
 
-    public TimeThread(double Seconds, double value, DriveObject drive){
+    public TimeThread(double value, double Seconds, DriveObject drive){
         seconds = Seconds;
         this.value = value;
         this.drive = drive;
         endVal = 0;
     }
 
-    public TimeThread(double Seconds, double value, double endVal, DriveObject drive){
+    public TimeThread(double value, double Seconds, double endVal, DriveObject drive){
         seconds = Seconds;
         this.value = value;
         this.drive = drive;
         this.endVal = endVal;
     }
 
+    public TimeThread(){}
+
     public void run() {
         switch(drive.getType()){
             case DcMotorImplEx:
-                drive.set(value);
+                drive.setPower(value);
                 break;
             case CRServo:
-                drive.set(value);
+                drive.setPower(value);
                 break;
             case Servo:
                 drive.set(value);
@@ -38,6 +40,6 @@ public class TimeThread extends Thread{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        drive.set(value);
+        drive.setPower(value);
     }
 }
