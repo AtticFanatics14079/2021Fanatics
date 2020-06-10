@@ -17,14 +17,14 @@ public class HardwareThread extends Thread {
     Boolean[] changedParts; //See hardwareValues in ValueStorage for each value.
     Double[] runVals; //See hardwareValues in ValueStorage for each value.
     //public Configuration config;
-    public ConfigurationRR config;
+    public Configuration config;
     private volatile boolean stop;
     private boolean setTime = false;
     public double voltMult = 1, lastTime = 0;
 
     public HardwareThread(ValueStorage valStorage, HardwareMap hwMap){
         this.vals = valStorage;
-        config = new ConfigurationRR(hwMap, vals);
+        config = new Configuration(hwMap, vals);
         vals.setup(config.hardware.size());
         runVals = new Double[config.hardware.size()];
         hardwareVals = new Double[config.hardware.size()][vals.maxValues];

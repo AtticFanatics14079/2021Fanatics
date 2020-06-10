@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectLibrary;
-
+/*
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -33,13 +33,13 @@ public class SampleTeleOp extends LinearOpMode {
         setPower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
         if(gamepad1.dpad_left) hardware.config.ExtendGripper.set(1000); //THIS MAY BE SKETCH BECAUSE BAD PIDs!!!
         else if(gamepad1.dpad_right) hardware.config.ExtendGripper.set(0);
-        /* Next step (once we figure out the PIDs)
+         Next step (once we figure out the PIDs)
         if(gamepad1.dpad_up) {
             Sequence s = new Sequence(() -> hardware.config.ExtendGripper.set(0), null);
             Sequence t = new Sequence(() -> hardware.config.ExtendGripper.set(1000), s);
             Thread n = new Thread(t);
             n.run();
-        } */
+        }
         //What this should do is extend to 1000, then extend back when it's done.
     }
 
@@ -62,3 +62,5 @@ public class SampleTeleOp extends LinearOpMode {
         hardware.config.backRight.setPower(p4 * 2700);
     }
 }
+
+ */

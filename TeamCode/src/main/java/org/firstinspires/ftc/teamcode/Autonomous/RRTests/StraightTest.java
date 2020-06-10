@@ -1,33 +1,33 @@
 package org.firstinspires.ftc.teamcode.Autonomous.RRTests;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveREV;
-//THIS SHOULD MAKE THE ROBOT GO EXACTLY 6 FEET FORWARD
+import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDrive;
 
+/*
+ * This is a simple routine to test translational drive capabilities.
+ */
 @Config
-@Autonomous(group = "tuning")
+@Autonomous(group = "drive")
 public class StraightTest extends LinearOpMode {
-    private static double distance = 60;
-    ;
+    public static double DISTANCE = 60; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Trajectory trajectory = drive.trajectoryBuilder()
-                .forward(distance)
+        Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
+                .forward(DISTANCE)
                 .build();
 
         waitForStart();
 
-        drive.followTrajectorySync(trajectory);
-        while(!isStopRequested()){
-            telemetry.addLine("Waiting for stop");
-        }
+        if (isStopRequested()) return;
+
+        drive.followTrajectory(trajectory);
     }
 }
