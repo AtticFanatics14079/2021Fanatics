@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous.RoadRunner
 
-/*import com.acmerobotics.roadrunner.localization.Localizer
+import com.acmerobotics.roadrunner.localization.Localizer
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.kinematics.Kinematics
@@ -62,7 +62,7 @@ abstract class FanaticsThreeWheelTrackingLocalizer(
                     rawPoseDelta.getEntry(2, 0)
             )
             _poseEstimate = Kinematics.relativeOdometryUpdate(_poseEstimate, robotPoseDelta)
-            _poseEstimate = Pose2d(_poseEstimate.x,_poseEstimate.y,(wheelPositions.get(0)-wheelPositions.get(1)/TRACK_WIDTH))
+            _poseEstimate = Pose2d(_poseEstimate.x,_poseEstimate.y,Math.toRadians(wheelPositions.get(0)-wheelPositions.get(1)/TRACK_WIDTH))
         }
         lastWheelPositions = wheelPositions
     }
@@ -72,4 +72,4 @@ abstract class FanaticsThreeWheelTrackingLocalizer(
      */
     abstract fun getWheelPositions(): List<Double>
 }
- */
+
