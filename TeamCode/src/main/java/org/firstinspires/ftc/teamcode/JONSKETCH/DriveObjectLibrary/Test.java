@@ -11,7 +11,8 @@ public class Test extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        HardwareThread hardware = new HardwareThread(vals, hardwareMap);
+        SampleConfiguration config = new SampleConfiguration();
+        HardwareThread hardware = new HardwareThread(vals, hardwareMap, config);
         hardware.start();
         for(DriveObject d : hardware.config.hardware) {
             d.setClassification(DriveObject.classification.toPosition);

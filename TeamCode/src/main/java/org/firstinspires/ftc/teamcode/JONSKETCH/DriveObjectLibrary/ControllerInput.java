@@ -35,7 +35,8 @@ public class ControllerInput extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        hardware = new HardwareThread(vals, hardwareMap);
+        SampleConfiguration config = new SampleConfiguration();
+        hardware = new HardwareThread(vals, hardwareMap, config);
         hardware.start();
         //WritingThread write = new WritingThread(vals, FileName);
         //write.start();

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectLibrary;
 import android.support.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,13 +16,17 @@ import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants.encoderTicksToInches;
 
-public class ConfigurationRR extends SampleMecanumDrive {
+//Will need extensive testing to see if this class gets skipped over due to superclasses. If so, will need to override a LOT more functions MechanumDrive
+public class ConfigurationRR extends SampleMecanumDrive implements Configuration{
 
-    public ArrayList<DriveObject> hardware = new ArrayList<>();
     DriveObject backLeft, frontLeft, frontRight, backRight, ingester, imu, ScissorLeft, ScissorRight, FoundationLeft, FoundationRight, Gripper, ExtendGripper, Capstone;
     private List<LynxModule> allHubs;
 
-    public ConfigurationRR(HardwareMap hwMap, ValueStorage vals){
+    public ConfigurationRR(HardwareMap hardwareMap) {
+        super(hardwareMap);
+    }
+
+    public void Configure(HardwareMap hwMap, ValueStorage vals){
         //Add all hardware devices here.
         //Example: hardware.put("motor1", new DriveObject(DriveObject.type.DcMotorImplEx, "left_back_motor", DriveObject.classification.Drivetrain, hwMap));
         //In this example, "left_back_motor" is whatever your configuration says.
@@ -78,7 +83,6 @@ public class ConfigurationRR extends SampleMecanumDrive {
         }
     }
 
-    @Override
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
         Double[] pid = hardware.get(0).getPID();
         PIDCoefficients coefficients = new PIDCoefficients(pid[0], pid[1], pid[2]);
@@ -86,7 +90,6 @@ public class ConfigurationRR extends SampleMecanumDrive {
         //Also not sure if this works
     }
 
-    @Override
     public void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients) {
         hardware.get(0).setPID(coefficients.kP, coefficients.kI, coefficients.kD);
         hardware.get(1).setPID(coefficients.kP, coefficients.kI, coefficients.kD);
@@ -127,7 +130,7 @@ public class ConfigurationRR extends SampleMecanumDrive {
     }
 
     @Override
-    protected double getRawExternalHeading() {
+    public double getRawExternalHeading() {
         return imu.get();
     }
 }

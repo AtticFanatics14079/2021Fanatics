@@ -23,10 +23,10 @@ public class HardwareThread extends Thread {
     private boolean setTime = false;
     public double voltMult = 1, lastTime = 0;
 
-    public HardwareThread(ValueStorage valStorage, HardwareMap hwMap){
+    public HardwareThread(ValueStorage valStorage, HardwareMap hwMap, Configuration configuration){
         this.vals = valStorage;
-        config = new Configuration(hwMap, vals);
-        //config = new ConfigurationRR(hwMap, vals);
+        config = configuration;
+        config.Configure(hwMap, valStorage);
         vals.setup(config.hardware.size());
         Double[] temp = new Double[vals.maxValues];
         runVals = new Double[config.hardware.size()];

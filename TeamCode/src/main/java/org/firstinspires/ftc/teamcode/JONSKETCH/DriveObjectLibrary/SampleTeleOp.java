@@ -14,7 +14,8 @@ public class SampleTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        hardware = new HardwareThread(new ValueStorage(), hardwareMap);
+        ConfigurationRR config = new ConfigurationRR(hardwareMap);
+        hardware = new HardwareThread(new ValueStorage(), hardwareMap, config);
         //hardware.config.ExtendGripper.setPID(2, 0, 0); //Gonna need to mess with this one
         waitForStart();
         ElapsedTime time = new ElapsedTime();
