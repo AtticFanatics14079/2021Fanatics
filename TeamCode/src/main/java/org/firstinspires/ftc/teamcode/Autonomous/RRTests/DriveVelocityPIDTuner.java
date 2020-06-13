@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.config.ValueProvider;
 import com.acmerobotics.dashboard.config.variable.BasicVariable;
 import com.acmerobotics.dashboard.config.variable.CustomVariable;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
@@ -19,13 +18,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants;
-import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDrive;
 
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants.*;
-
+import static org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants.RUN_USING_ENCODER;
 
 /*
  * This routine is designed to tune the PID coefficients used by the REV Expansion Hubs for closed-
@@ -41,7 +39,7 @@ import static org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstant
 @Config
 @Autonomous(group = "drive")
 public class DriveVelocityPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 72;
+    public static double DISTANCE = 72; // in
 
     private static final String PID_VAR_NAME = "VELO_PID";
 
@@ -49,8 +47,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     private String catName;
     private CustomVariable catVar;
 
-
-    private SampleMecanumDriveBase drive;
+    private SampleMecanumDrive drive;
 
     private static MotionProfile generateProfile(boolean movingForward) {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
@@ -134,9 +131,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         }
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-        dashboard.setTelemetryTransmissionInterval(10);
-        TelemetryPacket fast = new TelemetryPacket();
-        drive = new SampleMecanumDriveREV(hardwareMap);
+
+        drive = new SampleMecanumDrive(hardwareMap);
 
         addPidVariable();
 
@@ -173,12 +169,12 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
             List<Double> velocities = drive.getWheelVelocities();
 
             // update telemetry
-            fast.put("targetVelocity", motionState.getV());
+            telemetry.addData("targetVelocity", motionState.getV());
             for (int i = 0; i < velocities.size(); i++) {
-                fast.put("velocity" + i, velocities.get(i));
-                fast.put("error" + i, motionState.getV() - velocities.get(i));
+                telemetry.addData("velocity" + i, velocities.get(i));
+                telemetry.addData("error" + i, motionState.getV() - velocities.get(i));
             }
-            dashboard.sendTelemetryPacket(fast);
+            telemetry.update();
         }
 
         removePidVariable();
