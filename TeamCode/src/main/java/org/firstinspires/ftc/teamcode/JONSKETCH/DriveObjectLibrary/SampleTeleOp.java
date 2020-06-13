@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectLibrary;
-/*
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -41,6 +41,7 @@ public class SampleTeleOp extends LinearOpMode {
             n.run();
         }
         //What this should do is extend to 1000, then extend back when it's done.
+        */
     }
 
     private void setPower(double px, double py, double pa){
@@ -62,5 +63,3 @@ public class SampleTeleOp extends LinearOpMode {
         //hardware.config.backRight.setPower(p4 * 2700);
     }
 }
-
- */

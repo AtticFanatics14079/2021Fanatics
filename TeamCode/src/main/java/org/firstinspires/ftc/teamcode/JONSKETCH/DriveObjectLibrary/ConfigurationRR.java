@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectLibrary;
-/*
+
 import android.support.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -8,14 +8,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDrive;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.DriveConstants.encoderTicksToInches;
 
-public class ConfigurationRR extends SampleMecanumDriveBase {
+public class ConfigurationRR extends SampleMecanumDrive {
 
     public ArrayList<DriveObject> hardware = new ArrayList<>();
     DriveObject backLeft, frontLeft, frontRight, backRight, ingester, imu, ScissorLeft, ScissorRight, FoundationLeft, FoundationRight, Gripper, ExtendGripper, Capstone;
@@ -131,5 +131,3 @@ public class ConfigurationRR extends SampleMecanumDriveBase {
         return imu.get();
     }
 }
-
- */
