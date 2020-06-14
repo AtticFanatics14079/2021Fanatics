@@ -10,13 +10,13 @@ android {
         targetSdkVersion 28
     }
 
-    compileSdkVersion 29
+    compileSdkVersion 28
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildToolsVersion = '29.0.2'
+    buildToolsVersion = '29.0.02'
 }
 
 repositories {
