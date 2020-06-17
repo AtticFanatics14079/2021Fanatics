@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous.PurePursuit;
 
+
 public class Point{
     double x;
     double y;
@@ -32,7 +33,6 @@ public class Point{
         return new Point(x / scaler, y / scaler);
     }
     public Point normalize(Point vector, double hypotenuse){
-        Point vector_normalized = vector.divide(hypotenuse);
-        return vector_normalized;
+        return vector.divide(hypotenuse);
     }
 }
