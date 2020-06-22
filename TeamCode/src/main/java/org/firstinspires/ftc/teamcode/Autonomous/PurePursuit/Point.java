@@ -35,4 +35,12 @@ public class Point{
     public Point normalize(Point vector, double hypotenuse){
         return vector.divide(hypotenuse);
     }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

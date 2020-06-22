@@ -20,9 +20,10 @@ public class goToPositionOpMode extends LinearOpMode {
         while(!isStopRequested()){
             odometry.update();
             Pose2d currentPose = odometry.getPoseEstimate();
-            Point targetPoint = new Point(48,48);
-            drive.goToPosition(48,48,1,0,1);
-            t.addData("Current Position: ", currentPose);
+            Point targetPoint = new Point(2,2);
+            drive.updatePose(new Point(currentPose.getX(), currentPose.getY()),currentPose.getHeading());
+            drive.goToPosition(12,12,1,0,1);
+            t.addData("Current Position (Odo): ", currentPose);
             t.addData("Target Point: ", targetPoint);
             t.update();
         }

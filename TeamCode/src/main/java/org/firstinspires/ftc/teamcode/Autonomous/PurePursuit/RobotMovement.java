@@ -82,16 +82,16 @@ public class RobotMovement {
         Point point1 = new Point(x,y);
         double distanceToTarget = Geometry.distanceBetweenPoints(robotPosition, point1);
 
-        double absoluteAngleToTarget = AngleFunction.turnAngle(robotPosition, point1);
+        double absoluteAngleToTarget = AngleFunction.turnAngle(point1, robotPosition);
 
         double relativeAngleToPoint = AngleFunction.AngleWrap(absoluteAngleToTarget - (Math.toRadians(worldAngle) - Math.toRadians(90)));
 
 
         double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
-        double relativeYToPoint = Math.asin(relativeAngleToPoint) * distanceToTarget;
+        double relativeYToPoint = Math.sin(relativeAngleToPoint) * distanceToTarget;
 
         double movementXPower = relativeXToPoint/ (Math.abs(relativeXToPoint)+ Math.abs(relativeYToPoint)); //guratness movement x power to be from 0 -1
-        double movementYPower = relativeYToPoint/ (Math.abs(relativeXToPoint))+ Math.abs(relativeYToPoint);
+        double movementYPower = relativeYToPoint/ (Math.abs(relativeXToPoint)+ Math.abs(relativeYToPoint));
 
         // import our actual motors functions
         double movement_x = movementXPower;
@@ -102,8 +102,13 @@ public class RobotMovement {
         if(distanceToTarget < 3) {
             movement_Turn = 0;
         }
-
-        setPower(movement_x,movement_y,movement_Turn);
+        System.out.println("Distance to target: " + distanceToTarget);
+        System.out.println("MovementX: " + movement_x);
+        System.out.println("MovementY: " + movement_y);
+        System.out.println("MovementTurn: " + movement_Turn);
+        System.out.println(relativeXToPoint);
+        System.out.println(relativeYToPoint);
+        setPower(-movement_x,-movement_y,0);
 
     }
 
