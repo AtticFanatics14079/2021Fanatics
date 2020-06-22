@@ -1,13 +1,41 @@
 package org.firstinspires.ftc.teamcode.Autonomous.PurePursuit;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
+
+
 import java.util.ArrayList;
 
 
 public class RobotMovement {
-    static Point robotPosition = new Point(0,0);//NEED TO UPDATE ROBOT WORLD POSIITON
-    static double worldAngle = 0;  //NEED TO UPDATE WORLD ANGLE
+    Point robotPosition = new Point(0,0);//NEED TO UPDATE ROBOT WORLD POSIITON
+    double worldAngle = 0;  //NEED TO UPDATE WORLD ANGLE
+    DcMotorImplEx[] Motors = new DcMotorImplEx[4];
 
     //add edge cases
-    public static void followCurve(ArrayList<CurvePoint> allPoints, double followAngle) {
+    public RobotMovement(HardwareMap hwMap){
+        Motors[0] = hwMap.get(DcMotorImplEx.class, "back_left_motor");
+        Motors[1] = hwMap.get(DcMotorImplEx.class, "front_left_motor");
+        Motors[2] = hwMap.get(DcMotorImplEx.class, "front_right_motor");
+        Motors[3] = hwMap.get(DcMotorImplEx.class, "back_right_motor");
+
+        Motors[2].setDirection(DcMotorSimple.Direction.REVERSE);
+        Motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
+
+        Motors[0].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Motors[1].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Motors[2].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Motors[3].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        Motors[0].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Motors[1].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Motors[2].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Motors[3].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void followCurve(ArrayList<CurvePoint> allPoints, double followAngle) {
         for(int i = 0; i<allPoints.size() -1; i++) {
 
         }
@@ -18,8 +46,7 @@ public class RobotMovement {
     }
 
 
-
-    public static CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, Point robotLocation, double followRadius) {
+    public CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, Point robotLocation, double followRadius) {
         CurvePoint followMe = new CurvePoint(pathPoints.get(0)); //default go to very first point
 
         for(int i = 0; i<pathPoints.size() - 1; i++) { //prefer points that are later in the list
@@ -51,7 +78,7 @@ public class RobotMovement {
 
     }
 
-    public static void goToPosition(double x, double y, double movementSpeed,double preferredAngle, double turnSpeed){
+    public void goToPosition(double x, double y, double movementSpeed,double preferredAngle, double turnSpeed){
         Point point1 = new Point(x,y);
         double distanceToTarget = Geometry.distanceBetweenPoints(robotPosition, point1);
 
@@ -67,18 +94,42 @@ public class RobotMovement {
         double movementYPower = relativeYToPoint/ (Math.abs(relativeXToPoint))+ Math.abs(relativeYToPoint);
 
         // import our actual motors functions
-        //double movement_x = movementXPower;
-        //double movement_y = movementYPower;
+        double movement_x = movementXPower;
+        double movement_y = movementYPower;
         double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
-        //movement_Turn = Range.clip(relativeTurnAngle / Math.toRadians(90), -1, 1) * turnSpeed //need turning function and import range clip
+        double movement_Turn = Range.clip(relativeTurnAngle / Math.toRadians(90), -1, 1) * turnSpeed; //need turning function and import range clip
 
-        if(distanceToTarget < 10) {
-            //movementTurn = 0;
+        if(distanceToTarget < 3) {
+            movement_Turn = 0;
         }
 
+        setPower(movement_x,movement_y,movement_Turn);
 
     }
 
+    public void updatePose(Point pos, double worldAng){
+        this.robotPosition = pos;
+        this.worldAngle = worldAng;
+    }
+
+    public void setPower(double px, double py, double pa){ //Multiplied pa by -1 to suit turning requests
+        double p1 = -px + py + pa;
+        double p2 = px + py + pa;
+        double p3 = -px + py - pa;
+        double p4 = px + py - pa;
+        double max = Math.max(1.0, Math.abs(p1));
+        max = Math.max(max, Math.abs(p2));
+        max = Math.max(max, Math.abs(p3));
+        max = Math.max(max, Math.abs(p4));
+        p1 /= max;
+        p2 /= max;
+        p3 /= max;
+        p4 /= max;
+        Motors[0].setPower(p1);
+        Motors[1].setPower(p2);
+        Motors[2].setPower(p3);
+        Motors[3].setPower(p4);
+    }
 
 }
 
