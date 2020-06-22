@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.Autonomous.PurePursuit;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDrive;
 
+@Autonomous
 public class goToPositionOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
