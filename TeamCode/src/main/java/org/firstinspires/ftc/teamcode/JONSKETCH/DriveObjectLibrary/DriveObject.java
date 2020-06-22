@@ -452,13 +452,12 @@ public class DriveObject {
         pid[1] = i;
         pid[2] = d;
     }
-    public void setPID(double p, double i, double d, double maxVelocity){
+    public void setPIDF(double p, double i, double d, double f){
         pid[0] = p;
         pid[1] = i;
         pid[2] = d;
-        pid[3] = maxVelocity;
+        pid[3] = f;
     }
-
 
     public void setPID(Double[] pid){
         this.pid = pid;
@@ -479,6 +478,12 @@ public class DriveObject {
                 break;
         }
         imu.initialize(parameters);
+    }
+
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+        if(thisType == type.DcMotorImplEx) {
+            motor.setZeroPowerBehavior(zeroPowerBehavior);
+        }
     }
 
     public void endAllThreads(){

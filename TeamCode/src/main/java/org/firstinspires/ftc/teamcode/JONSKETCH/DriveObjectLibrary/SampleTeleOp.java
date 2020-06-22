@@ -36,7 +36,7 @@ public class SampleTeleOp extends LinearOpMode {
         //else if(gamepad1.dpad_right) hardware.config.ExtendGripper.set(0);
         /* Next step (once we figure out the PIDs)
         if(gamepad1.dpad_up) {
-            Sequence s = new Sequence(() -> hardware.config.ExtendGripper.set(0), null);
+            Sequence s = new Sequence(() -> hardware.config.ExtendGripper.set(0));
             Sequence t = new Sequence(() -> hardware.config.ExtendGripper.set(1000), s);
             Thread n = new Thread(t);
             n.run();
