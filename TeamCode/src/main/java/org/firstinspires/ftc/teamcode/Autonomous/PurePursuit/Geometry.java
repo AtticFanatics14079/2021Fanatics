@@ -41,7 +41,7 @@ public class Geometry {
         double quadraticB = (2.0 * m1 * y1) - (2.0 * Math.pow(m1, 2) * x1);
         double quadraticC = (Math.pow(m1, 2) * Math.pow(x1, 2)) - (2.0 * y1 * m1 * x1) + Math.pow(y1, 2) - Math.pow(radius, 2);
 
-        ArrayList<Point> allPoints = new ArrayList<Point>();
+        ArrayList<Point> allPoints = new ArrayList<>();
 
         try {
 

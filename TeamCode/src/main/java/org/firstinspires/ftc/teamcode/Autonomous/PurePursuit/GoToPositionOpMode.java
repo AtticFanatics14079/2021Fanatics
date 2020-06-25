@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDrive;
 
 @Autonomous
-public class goToPositionOpMode extends LinearOpMode {
+public class GoToPositionOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive odometry = new SampleMecanumDrive(hardwareMap);
@@ -22,7 +22,7 @@ public class goToPositionOpMode extends LinearOpMode {
             Pose2d currentPose = odometry.getPoseEstimate();
             Point targetPoint = new Point(2,2);
             drive.updatePose(new Point(currentPose.getX(), currentPose.getY()),currentPose.getHeading());
-            drive.goToPosition(12,12,1,0,1);
+            drive.goToPosition(24,24,0.5,0,1);
             t.addData("Current Position (Odo): ", currentPose);
             t.addData("Target Point: ", targetPoint);
             t.update();

@@ -36,20 +36,20 @@ public class RobotMovement {
     }
 
     public void followCurve(ArrayList<CurvePoint> allPoints, double followAngle) {
-        for(int i = 0; i<allPoints.size() -1; i++) {
 
-        }
         CurvePoint followMe = getFollowPointPath(allPoints, new Point(robotPosition.x, robotPosition.y), allPoints.get(0).followDistance); //we can write function that using list of path points, figure where you are in path
 
-        goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle,followMe.turnSpeed);
+        goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed);
         //can go to op mode and run it
     }
 
 
     public CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, Point robotLocation, double followRadius) {
+
         CurvePoint followMe = new CurvePoint(pathPoints.get(0)); //default go to very first point
 
-        for(int i = 0; i<pathPoints.size() - 1; i++) { //prefer points that are later in the list
+        for(int i = 0; i < pathPoints.size() - 1; i++) { //prefer points that are later in the list
+
             CurvePoint startLine = pathPoints.get(i);
             CurvePoint endLine = pathPoints.get(i+1);
 
@@ -57,9 +57,8 @@ public class RobotMovement {
             // we want points closest to robot angle
 
             double closestAngle = 1000;
-            closestAngle = 1000;
 
-            for(Point thisIntersection: intersections){
+            for(Point thisIntersection : intersections){
                 double angle = Math.atan2(thisIntersection.y - robotPosition.y, thisIntersection.x - robotPosition.x); // absolute angle to world coordinate space
                 double deltaAngle = Math.abs(AngleFunction.AngleWrap(angle - Math.toRadians(worldAngle))); //his code had _rad after worldAngle
 
@@ -108,7 +107,7 @@ public class RobotMovement {
         System.out.println("MovementTurn: " + movement_Turn);
         System.out.println(relativeXToPoint);
         System.out.println(relativeYToPoint);
-        setPower(-movement_x,-movement_y,0);
+        setPower(-movement_x, -movement_y, movement_Turn);
 
     }
 
