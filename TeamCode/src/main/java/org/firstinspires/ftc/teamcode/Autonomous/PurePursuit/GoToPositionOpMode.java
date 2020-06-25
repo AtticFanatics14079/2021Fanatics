@@ -22,7 +22,7 @@ public class GoToPositionOpMode extends LinearOpMode {
             Pose2d currentPose = odometry.getPoseEstimate();
             Point targetPoint = new Point(2,2);
             drive.updatePose(new Point(currentPose.getX(), currentPose.getY()),currentPose.getHeading());
-            drive.goToPosition(24,24,0.5,0,1);
+            drive.goToPosition(24,24,0.5,270,1);
             t.addData("Current Position (Odo): ", currentPose);
             t.addData("Target Point: ", targetPoint);
             t.update();

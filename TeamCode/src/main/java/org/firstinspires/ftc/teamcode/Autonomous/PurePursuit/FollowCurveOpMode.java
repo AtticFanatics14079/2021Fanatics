@@ -18,10 +18,9 @@ public class FollowCurveOpMode extends LinearOpMode {
         RobotMovement drive = new RobotMovement(hardwareMap);
         MultipleTelemetry t = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         ArrayList<CurvePoint> aNtWoNsMoLbRaIn = new ArrayList<>();
-        aNtWoNsMoLbRaIn.add(new CurvePoint(0, 0, 0.5, 1, 10, Math.toRadians(50), 1));
-        aNtWoNsMoLbRaIn.add(new CurvePoint(0, 48, 0.5, 1, 10, Math.toRadians(50), 1));
-        aNtWoNsMoLbRaIn.add(new CurvePoint(48, 48, 0.5, 1, 10, Math.toRadians(50), 1));
-        aNtWoNsMoLbRaIn.add(new CurvePoint(48, 0, 0.5, 1, 10, Math.toRadians(50), 1));
+        //aNtWoNsMoLbRaIn.add(new CurvePoint(0, 0, 0.5, 1, 10, Math.toRadians(50), 1));
+        aNtWoNsMoLbRaIn.add(new CurvePoint(0, 24, 0.5, 1, 15, Math.toRadians(50), 1));
+        aNtWoNsMoLbRaIn.add(new CurvePoint(36, 24, 0.5, 1, 15, Math.toRadians(50), 1));
         waitForStart();
 
         while(!isStopRequested()){
@@ -29,7 +28,7 @@ public class FollowCurveOpMode extends LinearOpMode {
             Pose2d currentPose = odometry.getPoseEstimate();
             Point targetPoint = new Point(2,2);
             drive.updatePose(new Point(currentPose.getX(), currentPose.getY()),currentPose.getHeading());
-            drive.followCurve(aNtWoNsMoLbRaIn, 0);
+            drive.followCurve(aNtWoNsMoLbRaIn, 270);
             t.addData("Current Position (Odo): ", currentPose);
             t.addData("Target Point: ", targetPoint);
             t.update();

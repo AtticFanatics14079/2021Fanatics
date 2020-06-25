@@ -40,5 +40,16 @@ public class CurvePoint {
 
     }
 
+    @Override
+    public String toString() {
+        return "CurvePoint{" +
+                "x=" + x +
+                ", y=" + y +
+                ", moveSpeed=" + moveSpeed +
+                ", turnSpeed=" + turnSpeed +
+                ", followDistance=" + followDistance +
+                ", pointLength=" + pointLength +
+                '}';
+    }
 }
 

@@ -38,7 +38,10 @@ public class RobotMovement {
     public void followCurve(ArrayList<CurvePoint> allPoints, double followAngle) {
 
         CurvePoint followMe = getFollowPointPath(allPoints, new Point(robotPosition.x, robotPosition.y), allPoints.get(0).followDistance); //we can write function that using list of path points, figure where you are in path
-
+        System.out.println("Going Towards Point: " + followMe);
+        if(Math.hypot(robotPosition.x-allPoints.get(allPoints.size()-1).x,robotPosition.y-allPoints.get(allPoints.size()-1).y)<allPoints.get(0).followDistance){
+            followMe = allPoints.get(allPoints.size()-1);
+        }
         goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed);
         //can go to op mode and run it
     }
@@ -55,12 +58,12 @@ public class RobotMovement {
 
             ArrayList<Point> intersections = Geometry.lineCircleIntersection(robotLocation, followRadius, startLine.toPoint(), endLine.toPoint());
             // we want points closest to robot angle
-
+            System.out.println("Intersections: "+ intersections);
             double closestAngle = 1000;
 
             for(Point thisIntersection : intersections){
                 double angle = Math.atan2(thisIntersection.y - robotPosition.y, thisIntersection.x - robotPosition.x); // absolute angle to world coordinate space
-                double deltaAngle = Math.abs(AngleFunction.AngleWrap(angle - Math.toRadians(worldAngle))); //his code had _rad after worldAngle
+                double deltaAngle = Math.abs(AngleFunction.AngleWrap(angle - worldAngle)); //his code had _rad after worldAngle
 
                 if(deltaAngle < closestAngle) {
                     closestAngle = deltaAngle;
@@ -68,22 +71,18 @@ public class RobotMovement {
                 }
                 // if angle is the same returns zero, otherwise corrects
 
-
             }
-
         }
         return followMe;
-
-
     }
 
     public void goToPosition(double x, double y, double movementSpeed,double preferredAngle, double turnSpeed){
         Point point1 = new Point(x,y);
         double distanceToTarget = Geometry.distanceBetweenPoints(robotPosition, point1);
 
-        double absoluteAngleToTarget = AngleFunction.turnAngle(point1, robotPosition);
+        double absoluteAngleToTarget = AngleFunction.turnAngle(point1, robotPosition)+Math.toRadians(90);
 
-        double relativeAngleToPoint = AngleFunction.AngleWrap(absoluteAngleToTarget - (Math.toRadians(worldAngle) - Math.toRadians(90)));
+        double relativeAngleToPoint = AngleFunction.AngleWrap(absoluteAngleToTarget - worldAngle);
 
 
         double relativeXToPoint = Math.cos(relativeAngleToPoint) * distanceToTarget;
@@ -93,21 +92,15 @@ public class RobotMovement {
         double movementYPower = relativeYToPoint/ (Math.abs(relativeXToPoint)+ Math.abs(relativeYToPoint));
 
         // import our actual motors functions
-        double movement_x = movementXPower;
-        double movement_y = movementYPower;
-        double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + preferredAngle;
+        double movement_x = movementXPower * movementSpeed;
+        double movement_y = movementYPower * movementSpeed;
+        double relativeTurnAngle = relativeAngleToPoint - Math.toRadians(180) + Math.toRadians(preferredAngle);
         double movement_Turn = Range.clip(relativeTurnAngle / Math.toRadians(90), -1, 1) * turnSpeed; //need turning function and import range clip
-
-        if(distanceToTarget < 3) {
+        if(distanceToTarget < 5) {
             movement_Turn = 0;
         }
         System.out.println("Distance to target: " + distanceToTarget);
-        System.out.println("MovementX: " + movement_x);
-        System.out.println("MovementY: " + movement_y);
-        System.out.println("MovementTurn: " + movement_Turn);
-        System.out.println(relativeXToPoint);
-        System.out.println(relativeYToPoint);
-        setPower(-movement_x, -movement_y, movement_Turn);
+        setPower(-movement_x, -movement_y, -movement_Turn);
 
     }
 
