@@ -7,12 +7,15 @@ import com.qualcomm.robotcore.util.Range;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class RobotMovement {
     Point robotPosition = new Point(0,0);//NEED TO UPDATE ROBOT WORLD POSIITON
     double worldAngle = 0;  //NEED TO UPDATE WORLD ANGLE
     DcMotorImplEx[] Motors = new DcMotorImplEx[4];
+    CurvePoint[] pointsInReference = null;
+    int targetPoint = 0;
 
     //add edge cases
     public RobotMovement(HardwareMap hwMap){
@@ -37,7 +40,22 @@ public class RobotMovement {
 
     public void followCurve(ArrayList<CurvePoint> allPoints, double followAngle) {
 
-        CurvePoint followMe = getFollowPointPath(allPoints, new Point(robotPosition.x, robotPosition.y), allPoints.get(0).followDistance); //we can write function that using list of path points, figure where you are in path
+        //Removes excessive points from reference
+        if(pointsInReference == null) {
+            pointsInReference = new CurvePoint[2];
+            pointsInReference[0] = allPoints.get(0);
+            pointsInReference[1] = allPoints.get(1);
+        }
+        if(Math.hypot(robotPosition.x - pointsInReference[1].x, robotPosition.y - pointsInReference[1].y) < pointsInReference[1].followDistance) {
+            targetPoint++;
+            pointsInReference[0] = pointsInReference[1];
+            pointsInReference[1] = allPoints.get(targetPoint);
+        }
+        //Ignore my type casting, I just really wanted this to be an array for some reason.
+        CurvePoint followMe = getFollowPointPath((ArrayList<CurvePoint>) Arrays.asList(pointsInReference), new Point(robotPosition.x, robotPosition.y), allPoints.get(0).followDistance);
+        //End of new stuff
+
+        //CurvePoint followMe = getFollowPointPath(allPoints, new Point(robotPosition.x, robotPosition.y), allPoints.get(0).followDistance); //we can write function that using list of path points, figure where you are in path
         System.out.println("Going Towards Point: " + followMe);
         if(Math.hypot(robotPosition.x-allPoints.get(allPoints.size()-1).x,robotPosition.y-allPoints.get(allPoints.size()-1).y)<allPoints.get(0).followDistance){
             followMe = allPoints.get(allPoints.size()-1);
@@ -51,6 +69,7 @@ public class RobotMovement {
 
         CurvePoint followMe = new CurvePoint(pathPoints.get(0)); //default go to very first point
 
+        //Can clean this up if my previous stuff works.
         for(int i = 0; i < pathPoints.size() - 1; i++) { //prefer points that are later in the list
 
             CurvePoint startLine = pathPoints.get(i);
