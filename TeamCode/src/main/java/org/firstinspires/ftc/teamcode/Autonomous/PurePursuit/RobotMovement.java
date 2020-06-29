@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 
 public class RobotMovement {
-    Point robotPosition = new Point(0,0);//NEED TO UPDATE ROBOT WORLD POSIITON
+    Point robotPosition = new Point(0,0);//NEED TO UPDATE ROBOT WORLD POSITION
     double worldAngle = 0;  //NEED TO UPDATE WORLD ANGLE
     DcMotorImplEx[] Motors = new DcMotorImplEx[4];
     private CurvePoint[] pointsInReference = null;
@@ -51,11 +51,12 @@ public class RobotMovement {
             pointsInReference[0] = pointsInReference[1];
             pointsInReference[1] = allPoints.get(targetPoint);
         }
-        //Ignore my type casting, I just really wanted this to be an array for some reason.
-        CurvePoint followMe = getFollowPointPath((ArrayList<CurvePoint>) Arrays.asList(pointsInReference), new Point(robotPosition.x, robotPosition.y), allPoints.get(0).followDistance);
+
+        Point robotPoint = new Point(robotPosition.x,robotPosition.y);
+        int shortPoint = Geometry.distanceBetweenPoints(robotPoint, pointsInReference[0].toPoint()) < Geometry.distanceBetweenPoints(robotPoint,pointsInReference[1].toPoint()) ? 0 : 1;
+        CurvePoint followMe = getFollowPointPath((ArrayList<CurvePoint>) Arrays.asList(pointsInReference), robotPoint, allPoints.get(shortPoint).followDistance);
         //End of new stuff
 
-        //CurvePoint followMe = getFollowPointPath(allPoints, new Point(robotPosition.x, robotPosition.y), allPoints.get(0).followDistance); //we can write function that using list of path points, figure where you are in path
         System.out.println("Going Towards Point: " + followMe);
         if(Math.hypot(robotPosition.x-allPoints.get(allPoints.size()-1).x,robotPosition.y-allPoints.get(allPoints.size()-1).y)<allPoints.get(0).followDistance){
             followMe = allPoints.get(allPoints.size()-1);
@@ -64,10 +65,9 @@ public class RobotMovement {
         //can go to op mode and run it
     }
 
-
     public CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, Point robotLocation, double followRadius) {
 
-        CurvePoint followMe = new CurvePoint(pathPoints.get(0)); //default go to very first point
+        CurvePoint followMe = new CurvePoint(pathPoints.get(1)); //default go to very second point
 
         //Can clean this up if my previous stuff works.
         ArrayList<Point> intersections = Geometry.lineCircleIntersection(robotLocation, followRadius, pathPoints.get(0).toPoint(), pathPoints.get(1).toPoint());
