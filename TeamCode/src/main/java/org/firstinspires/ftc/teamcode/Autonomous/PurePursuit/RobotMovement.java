@@ -14,8 +14,8 @@ public class RobotMovement {
     Point robotPosition = new Point(0,0);//NEED TO UPDATE ROBOT WORLD POSIITON
     double worldAngle = 0;  //NEED TO UPDATE WORLD ANGLE
     DcMotorImplEx[] Motors = new DcMotorImplEx[4];
-    CurvePoint[] pointsInReference = null;
-    int targetPoint = 0;
+    private CurvePoint[] pointsInReference = null;
+    private int targetPoint = 1;
 
     //add edge cases
     public RobotMovement(HardwareMap hwMap){
@@ -46,7 +46,7 @@ public class RobotMovement {
             pointsInReference[0] = allPoints.get(0);
             pointsInReference[1] = allPoints.get(1);
         }
-        if(Math.hypot(robotPosition.x - pointsInReference[1].x, robotPosition.y - pointsInReference[1].y) < pointsInReference[1].followDistance) {
+        if(Math.hypot(robotPosition.x - pointsInReference[1].x, robotPosition.y - pointsInReference[1].y) < pointsInReference[1].followDistance - 2) {
             targetPoint++;
             pointsInReference[0] = pointsInReference[1];
             pointsInReference[1] = allPoints.get(targetPoint);
@@ -70,27 +70,20 @@ public class RobotMovement {
         CurvePoint followMe = new CurvePoint(pathPoints.get(0)); //default go to very first point
 
         //Can clean this up if my previous stuff works.
-        for(int i = 0; i < pathPoints.size() - 1; i++) { //prefer points that are later in the list
+        ArrayList<Point> intersections = Geometry.lineCircleIntersection(robotLocation, followRadius, pathPoints.get(0).toPoint(), pathPoints.get(1).toPoint());
 
-            CurvePoint startLine = pathPoints.get(i);
-            CurvePoint endLine = pathPoints.get(i+1);
+        double closestAngle = 1000;
 
-            ArrayList<Point> intersections = Geometry.lineCircleIntersection(robotLocation, followRadius, startLine.toPoint(), endLine.toPoint());
-            // we want points closest to robot angle
-            System.out.println("Intersections: "+ intersections);
-            double closestAngle = 1000;
+        for(Point thisIntersection : intersections){
 
-            for(Point thisIntersection : intersections){
-                double angle = Math.atan2(thisIntersection.y - robotPosition.y, thisIntersection.x - robotPosition.x); // absolute angle to world coordinate space
-                double deltaAngle = Math.abs(AngleFunction.AngleWrap(angle - worldAngle)); //his code had _rad after worldAngle
+            double angle = Math.atan2(thisIntersection.y - robotPosition.y, thisIntersection.x - robotPosition.x); // absolute angle to world coordinate space
+            double deltaAngle = Math.abs(AngleFunction.AngleWrap(angle - worldAngle)); //his code had _rad after worldAngle
 
-                if(deltaAngle < closestAngle) {
-                    closestAngle = deltaAngle;
-                    followMe.setPoint(thisIntersection);
-                }
-                // if angle is the same returns zero, otherwise corrects
-
+            if(deltaAngle < closestAngle) {
+                closestAngle = deltaAngle;
+                followMe.setPoint(thisIntersection);
             }
+            // if angle is the same returns zero, otherwise corrects
         }
         return followMe;
     }
