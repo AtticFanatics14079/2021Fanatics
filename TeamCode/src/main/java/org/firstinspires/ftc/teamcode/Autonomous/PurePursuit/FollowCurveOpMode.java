@@ -18,9 +18,13 @@ public class FollowCurveOpMode extends LinearOpMode {
         RobotMovement drive = new RobotMovement(hardwareMap);
         MultipleTelemetry t = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         ArrayList<CurvePoint> aNtWoNsMoLbRaIn = new ArrayList<>();
-        //aNtWoNsMoLbRaIn.add(new CurvePoint(0, 0, 0.5, 1, 10, Math.toRadians(50), 1));
-        aNtWoNsMoLbRaIn.add(new CurvePoint(0, 24, 0.5, 1, 15, Math.toRadians(50), 1));
-        aNtWoNsMoLbRaIn.add(new CurvePoint(36, 24, 0.5, 1, 15, Math.toRadians(50), 1));
+        aNtWoNsMoLbRaIn.add(new CurvePoint(0, 0, 0.5, 0.5, 15, Math.toRadians(50), 1));
+        aNtWoNsMoLbRaIn.add(new CurvePoint(0, 36, 0.5, 0.5, 15, Math.toRadians(50), 1));
+        aNtWoNsMoLbRaIn.add(new CurvePoint(36, 36, 0.5, 0.5, 15, Math.toRadians(50), 1));
+        aNtWoNsMoLbRaIn.add(new CurvePoint(36, 0, 0.5, 0.5, 15, Math.toRadians(50), 1));
+        aNtWoNsMoLbRaIn.add(new CurvePoint(0, 36, 0.5, 0.5, 15, Math.toRadians(50), 1));
+        aNtWoNsMoLbRaIn.add(new CurvePoint(0, 0, 0.5, 0.5, 15, Math.toRadians(50), 1));
+
         waitForStart();
 
         while(!isStopRequested()){

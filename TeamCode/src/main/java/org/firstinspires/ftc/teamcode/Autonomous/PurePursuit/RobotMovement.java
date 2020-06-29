@@ -46,7 +46,7 @@ public class RobotMovement {
             pointsInReference[0] = allPoints.get(0);
             pointsInReference[1] = allPoints.get(1);
         }
-        if(Math.hypot(robotPosition.x - pointsInReference[1].x, robotPosition.y - pointsInReference[1].y) < pointsInReference[1].followDistance - 2) {
+        if(targetPoint < allPoints.size()-1 && Math.hypot(robotPosition.x - pointsInReference[1].x, robotPosition.y - pointsInReference[1].y) < pointsInReference[1].followDistance-2) {
             targetPoint++;
             pointsInReference[0] = pointsInReference[1];
             pointsInReference[1] = allPoints.get(targetPoint);
@@ -54,28 +54,30 @@ public class RobotMovement {
 
         Point robotPoint = new Point(robotPosition.x,robotPosition.y);
         int shortPoint = Geometry.distanceBetweenPoints(robotPoint, pointsInReference[0].toPoint()) < Geometry.distanceBetweenPoints(robotPoint,pointsInReference[1].toPoint()) ? 0 : 1;
-        CurvePoint followMe = getFollowPointPath((ArrayList<CurvePoint>) Arrays.asList(pointsInReference), robotPoint, allPoints.get(shortPoint).followDistance);
+        CurvePoint followMe = getFollowPointPath(pointsInReference, robotPoint, pointsInReference[shortPoint].followDistance);
+        System.out.println("ShortPoint:" + shortPoint);
         //End of new stuff
 
         System.out.println("Going Towards Point: " + followMe);
-        if(Math.hypot(robotPosition.x-allPoints.get(allPoints.size()-1).x,robotPosition.y-allPoints.get(allPoints.size()-1).y)<allPoints.get(0).followDistance){
+        if(targetPoint == allPoints.size()-1 && Math.hypot(robotPosition.x-allPoints.get(allPoints.size()-1).x,robotPosition.y-allPoints.get(allPoints.size()-1).y)<allPoints.get(0).followDistance){
             followMe = allPoints.get(allPoints.size()-1);
         }
+        System.out.println(followMe.toString());
         goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed);
         //can go to op mode and run it
     }
 
-    public CurvePoint getFollowPointPath(ArrayList<CurvePoint> pathPoints, Point robotLocation, double followRadius) {
+    public CurvePoint getFollowPointPath(CurvePoint[] pathPoints, Point robotLocation, double followRadius) {
 
-        CurvePoint followMe = new CurvePoint(pathPoints.get(1)); //default go to very second point
-
+        CurvePoint followMe = new CurvePoint(pathPoints[1]); //default go to very second point
+        System.out.println("FollowMeBeforeIntersections: " + followMe.toString());
         //Can clean this up if my previous stuff works.
-        ArrayList<Point> intersections = Geometry.lineCircleIntersection(robotLocation, followRadius, pathPoints.get(0).toPoint(), pathPoints.get(1).toPoint());
-
+        ArrayList<Point> intersections = Geometry.lineCircleIntersection(robotLocation, followRadius, pathPoints[0].toPoint(), pathPoints[1].toPoint());
+        System.out.println(intersections);
         double closestAngle = 1000;
 
         for(Point thisIntersection : intersections){
-
+            System.out.print("ThisIntersection: " + thisIntersection);
             double angle = Math.atan2(thisIntersection.y - robotPosition.y, thisIntersection.x - robotPosition.x); // absolute angle to world coordinate space
             double deltaAngle = Math.abs(AngleFunction.AngleWrap(angle - worldAngle)); //his code had _rad after worldAngle
 
@@ -85,6 +87,7 @@ public class RobotMovement {
             }
             // if angle is the same returns zero, otherwise corrects
         }
+        System.out.println("FollowMeBeforeReturn: " + followMe.toString());
         return followMe;
     }
 
