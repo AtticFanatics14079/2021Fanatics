@@ -328,7 +328,7 @@ public class ConfigurationRR extends MecanumDrive implements Configuration{
     //Need to fix these at some point
     public void setMode(DcMotor.RunMode runMode) {
         for (DriveObject motor : motors) {
-            //motor.setMode(runMode);
+            motor.setMode(runMode);
         }
     }
 
@@ -346,7 +346,7 @@ public class ConfigurationRR extends MecanumDrive implements Configuration{
 
     public void setPIDCoefficients(PIDCoefficients coefficients) { //Removed DcMotor.RunMode runMode,
         for (DriveObject motor : motors) {
-            motor.setPIDF(coefficients.kP, coefficients.kI, coefficients.kD, getMotorVelocityF());
+            motor.setPID(coefficients.kP, coefficients.kI, coefficients.kD, getMotorVelocityF());
         }
     }
 

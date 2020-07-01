@@ -1,17 +1,15 @@
-- Fix up ConfigurationRR
-- Add 4th PID term that is max velocity (default 3000)
-- Clean up the class to make it more user-friendly
+- Test ConfigurationRR
+- Test Odometry
 - Fix PositionThread to work with groups using tolerance
-- Get odometry set up
 - At this point, clean up recording and re-running software. Should not be much work, but optimize and use new DriveObjects more liberally
 - Add ways for recording software to measure target positions easier
 - WRITE USER GUIDE (aka README) so I don't need to explain (and so the explanation makes sense)
 
 Known potential issues:
+- RoadRunner may skip past "motors" and therefore ignore DriveObject's system (!)
 - No way to recognize end of servo movement (?)
-- Starting a thread while one is already active will result in weird results for a part (!)
 
 Shortcuts:
 - -> means implies
 - (?) -> not sure if needed
-- (!) -> done, but unsure if works
+- (!) -> unsure if system works (aka needs testing)

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectLibrary;
 
 import android.util.Pair;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -28,7 +29,7 @@ public class HardwareThread extends Thread {
         config = configuration;
         config.Configure(hwMap, valStorage);
         vals.setup(config.hardware.size());
-        Double[] temp = new Double[vals.maxValues];
+        Double[] temp = new Double[1];
         runVals = new Double[config.hardware.size()];
         hardwareVals = new Double[config.hardware.size()][temp.length];
         changedParts = new Boolean[config.hardware.size()];
@@ -57,7 +58,10 @@ public class HardwareThread extends Thread {
         }
         for(DriveObject d : config.hardware) {
             d.endAllThreads();
-            if(d.getType() == DriveObject.type.DcMotorImplEx) d.resetEncoders();
+            if(d.getType() == DriveObject.type.DcMotorImplEx) {
+                d.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                d.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
         }
     }
 
@@ -90,7 +94,7 @@ public class HardwareThread extends Thread {
         this.changedParts = changedParts.clone();
 
         for(int i = 0; i < config.hardware.size(); i++) {
-            if (this.changedParts[i])
+            if (this.changedParts[i] && config.hardware.get(i).getClassification() != DriveObject.classification.Sensor)
                 config.hardware.get(i).setHardware(runVals[i]);
         }
     }

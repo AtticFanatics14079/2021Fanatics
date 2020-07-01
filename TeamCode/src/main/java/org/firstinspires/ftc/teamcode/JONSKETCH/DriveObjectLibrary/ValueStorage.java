@@ -24,7 +24,7 @@ public class ValueStorage {
 
     public void setup(int size){
         runValues = new double[size];
-        hardwareValues = new Double[size][maxValues];
+        hardwareValues = new Double[size][];
         changedParts = new Boolean[size];
         System.out.println(changedParts.length);
     }
