@@ -32,13 +32,13 @@ public class RobotMovement {
         Motors[2].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Motors[3].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        Motors[0].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Motors[1].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Motors[2].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Motors[3].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Motors[0].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Motors[1].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Motors[2].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Motors[3].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void followCurve(ArrayList<CurvePoint> allPoints, double followAngle) {
+    public boolean followCurve(ArrayList<CurvePoint> allPoints, double followAngle) {
 
         //Removes excessive points from reference
         if(pointsInReference == null) {
@@ -61,9 +61,18 @@ public class RobotMovement {
         System.out.println("Going Towards Point: " + followMe);
         if(targetPoint == allPoints.size()-1 && Math.hypot(robotPosition.x-allPoints.get(allPoints.size()-1).x,robotPosition.y-allPoints.get(allPoints.size()-1).y)<allPoints.get(0).followDistance){
             followMe = allPoints.get(allPoints.size()-1);
+            followMe.moveSpeed = 0.2;
+
         }
         System.out.println(followMe.toString());
         goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed);
+        if(targetPoint == allPoints.size()-1 && Math.hypot(robotPosition.x-allPoints.get(allPoints.size()-1).x,robotPosition.y-allPoints.get(allPoints.size()-1).y)<1){
+            setPower(0,0,0);
+            return true;
+        }
+        else{
+            return false;
+        }
         //can go to op mode and run it
     }
 

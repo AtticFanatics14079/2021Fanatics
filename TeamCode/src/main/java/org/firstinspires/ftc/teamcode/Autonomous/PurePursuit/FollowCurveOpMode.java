@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Autonomous.RoadRunner.SampleMecanumDrive;
 
@@ -22,7 +23,7 @@ public class FollowCurveOpMode extends LinearOpMode {
         aNtWoNsMoLbRaIn.add(new CurvePoint(0, 36, 0.5, 0.5, 15, Math.toRadians(50), 1));
         aNtWoNsMoLbRaIn.add(new CurvePoint(36, 36, 0.5, 0.5, 15, Math.toRadians(50), 1));
         aNtWoNsMoLbRaIn.add(new CurvePoint(36, 0, 0.5, 0.5, 15, Math.toRadians(50), 1));
-        aNtWoNsMoLbRaIn.add(new CurvePoint(0, 36, 0.5, 0.5, 15, Math.toRadians(50), 1));
+        aNtWoNsMoLbRaIn.add(new CurvePoint(18, 36, 0.5, 0.5, 15, Math.toRadians(50), 1));
         aNtWoNsMoLbRaIn.add(new CurvePoint(0, 0, 0.5, 0.5, 15, Math.toRadians(50), 1));
 
         waitForStart();
@@ -32,9 +33,10 @@ public class FollowCurveOpMode extends LinearOpMode {
             Pose2d currentPose = odometry.getPoseEstimate();
             Point targetPoint = new Point(2,2);
             drive.updatePose(new Point(currentPose.getX(), currentPose.getY()),currentPose.getHeading());
-            drive.followCurve(aNtWoNsMoLbRaIn, 270);
+            if(drive.followCurve(aNtWoNsMoLbRaIn,270)){
+                requestOpModeStop();
+            }
             t.addData("Current Position (Odo): ", currentPose);
-            t.addData("Target Point: ", targetPoint);
             t.update();
         }
     }
