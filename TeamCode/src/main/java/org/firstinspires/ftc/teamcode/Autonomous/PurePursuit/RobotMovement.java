@@ -61,8 +61,7 @@ public class RobotMovement {
         System.out.println("Going Towards Point: " + followMe);
         if(targetPoint == allPoints.size()-1 && Math.hypot(robotPosition.x-allPoints.get(allPoints.size()-1).x,robotPosition.y-allPoints.get(allPoints.size()-1).y)<allPoints.get(0).followDistance){
             followMe = allPoints.get(allPoints.size()-1);
-            followMe.moveSpeed = 0.2;
-
+            followMe.moveSpeed = Range.clip(Math.hypot(robotPosition.x - followMe.x, robotPosition.y - followMe.y) / 4.0, -1, 1) * allPoints.get(allPoints.size() - 1).moveSpeed;
         }
         System.out.println(followMe.toString());
         goToPosition(followMe.x, followMe.y, followMe.moveSpeed, followAngle, followMe.turnSpeed);
