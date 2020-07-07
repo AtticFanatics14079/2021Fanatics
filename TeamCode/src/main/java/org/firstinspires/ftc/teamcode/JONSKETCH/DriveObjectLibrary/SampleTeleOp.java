@@ -15,7 +15,8 @@ public class SampleTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         ConfigurationRR config = new ConfigurationRR(hardwareMap);
-        hardware = new HardwareThread(new ValueStorage(), hardwareMap, config);
+        ValueStorage vals = new ValueStorage();
+        hardware = new HardwareThread(vals, hardwareMap, config);
         //hardware.config.ExtendGripper.setPID(2, 0, 0); //Gonna need to mess with this one
         waitForStart();
         ElapsedTime time = new ElapsedTime();
@@ -28,6 +29,7 @@ public class SampleTeleOp extends LinearOpMode {
                 getInput();
             }
         }
+        hardware.Stop();
     }
 
     private void getInput(){
@@ -58,9 +60,9 @@ public class SampleTeleOp extends LinearOpMode {
         p2 /= max;
         p3 /= max;
         p4 /= max;
-        //hardware.config.backLeft.setPower(p1 * 2700); //To switch to velo, random number atm
-        //hardware.config.frontLeft.setPower(p2 * 2700);
-        //hardware.config.frontRight.setPower(p3 * 2700);
-        //hardware.config.backRight.setPower(p4 * 2700);
+        hardware.config.hardware.get(0).setPower(p1 * 2700); //To switch to velo, random number atm
+        hardware.config.hardware.get(1).setPower(p2 * 2700);
+        hardware.config.hardware.get(2).setPower(p3 * 2700);
+        hardware.config.hardware.get(3).setPower(p4 * 2700);
     }
 }

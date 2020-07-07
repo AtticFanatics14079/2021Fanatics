@@ -325,15 +325,19 @@ public class DriveObject {
             return null;
         }
         timeThread = new TimeThread(Power, Seconds, this);
+        //NOTE: If a TimeThread is called twice on the same motor, the first will not be overridden. May change this later.
         timeThread.start();
         return timeThread;
     }
 
     public Thread setTargetPosition(double targetPosition, double maxSpeed){
-        if(thisClass != classification.toPosition){
+        /*if(thisClass != classification.toPosition){
             System.out.println("Invalid call.");
             return null;
         }
+
+         */
+        //See below
         switch(thisType){
             case Servo:
                 Double[] p = new Double[partNum + 1];
@@ -349,7 +353,7 @@ public class DriveObject {
                 return null;
             case DcMotorImplEx:
                 //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
-                if(posThread.isAlive()) posThread.Stop();
+                if(posThread != null && posThread.isAlive()) posThread.Stop();
                 posThread = new PositionThread((int) targetPosition, maxSpeed, 50, this);
                 posThread.start();
                 return posThread;
@@ -358,10 +362,13 @@ public class DriveObject {
     }
 
     public Thread setTargetPosition(double targetPosition, double tolerance, double maxSpeed){
-        if(thisClass != classification.toPosition){
+        /*if(thisClass != classification.toPosition){
             System.out.println("Invalid call.");
             return null;
         }
+
+         */
+        //Will come up with a better system to determine what can call setTargetPosition later.
         switch(thisType){
             case Servo:
                 Double[] p = new Double[partNum + 1];
@@ -377,7 +384,7 @@ public class DriveObject {
                 return null;
             case DcMotorImplEx:
                 //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
-                if(posThread.isAlive()) posThread.Stop();
+                if(posThread != null && posThread.isAlive()) posThread.Stop();
                 posThread = new PositionThread((int) targetPosition, maxSpeed, tolerance, this);
                 posThread.start();
                 return posThread;
@@ -388,7 +395,7 @@ public class DriveObject {
     public Thread groupSetTargetPosition(int targetPos, double maxSpeed, double tolerance, DriveObject ...drive){
         for(DriveObject d : drive) if(d.getClassification() != classification.toPosition) return null;
         //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
-        if(posThread.isAlive()) posThread.Stop();
+        if(posThread != null && posThread.isAlive()) posThread.Stop();
         posThread = new PositionThread(targetPos, maxSpeed, tolerance, drive);
         posThread.start();
         return posThread;
@@ -397,7 +404,7 @@ public class DriveObject {
     public Thread groupSetTargetPosition(int targetPos, double maxSpeed, double tolerance, ArrayList<DriveObject> drive){
         for(DriveObject d : drive) if(d.getClassification() != classification.toPosition) return null;
         //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
-        if(posThread.isAlive()) posThread.Stop();
+        if(posThread != null && posThread.isAlive()) posThread.Stop();
         DriveObject[] d = new DriveObject[drive.size()];
         int i = 0;
         for(DriveObject a : drive) d[i++] = a;
@@ -407,9 +414,9 @@ public class DriveObject {
     }
 
     public void endAllThreads(){
-        if(posThread.isAlive()) posThread.Stop();
-        if(timeThread.isAlive()) timeThread.stop(); //Have to use this because timeThread is sleeping. May change later.
-        if(odoThread.isAlive()) odoThread.Stop();
+        if(posThread != null && posThread.isAlive()) posThread.Stop();
+        if(timeThread != null && timeThread.isAlive()) timeThread.stop(); //Have to use this because timeThread is sleeping. May change later.
+        if(odoThread != null && odoThread.isAlive()) odoThread.Stop();
     }
 
     //SECTION 7 : Algorithm Variables (e.g. PID)
@@ -445,6 +452,7 @@ public class DriveObject {
             odometryWheels[i] = hwMap.get(DcMotorImplEx.class, trackingWheelNames[i]);
         }
         int[] dimensions = new int[]{width, length};
+        if(odoThread != null && odoThread.isAlive()) odoThread.Stop();
         odoThread = new OdometryThread(odometryWheels.length, this, vals, dimensions);
         odoThread.start();
     }

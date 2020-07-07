@@ -71,6 +71,9 @@ public class PositionThread extends Thread {
     private double toPosition(){
         double velocity = 0;
         error = pos - drive.get(0).get();
+        if(drive.get(0).getClassification() == DriveObject.classification.Drivetrain) {
+            error = pos - drive.get(0).get(1);
+        }
         totalError += error;
         velocity += PID.get(0)[0] * error;
         velocity += PID.get(0)[1] * totalError;

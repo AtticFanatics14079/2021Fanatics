@@ -110,9 +110,9 @@ public class ControllerInput extends LinearOpMode {
     }
 
     private void setPower(double[] p){
-        hardware.config.hardware.get(0).set(p[0]);
-        hardware.config.hardware.get(1).set(p[1]);
-        hardware.config.hardware.get(2).set(p[2]);
-        hardware.config.hardware.get(3).set(p[3]);
+        hardware.config.hardware.get(0).set(p[0] * 2700);
+        hardware.config.hardware.get(1).set(p[1] * 2700);
+        hardware.config.hardware.get(2).set(p[2] * 2700);
+        hardware.config.hardware.get(3).set(p[3] * 2700);
     }
 }

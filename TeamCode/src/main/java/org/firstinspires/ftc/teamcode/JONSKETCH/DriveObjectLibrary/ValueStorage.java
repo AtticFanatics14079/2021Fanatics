@@ -29,6 +29,12 @@ public class ValueStorage {
         System.out.println(changedParts.length);
     }
 
+    public void clear(){
+        Arrays.fill(runValues, 0.0);
+        Arrays.fill(hardwareValues, null);
+        Arrays.fill(changedParts, null);
+    }
+
     public synchronized Double[][] hardware(boolean writing, Double[][] values){
         if(writing) {
             for(int i = 0; i < values.length; i++) {

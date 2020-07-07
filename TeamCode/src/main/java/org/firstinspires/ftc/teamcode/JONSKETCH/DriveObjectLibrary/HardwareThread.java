@@ -37,10 +37,7 @@ public class HardwareThread extends Thread {
         Arrays.fill(runVals, 0.0);
         Arrays.fill(temp, 0.0);
         Arrays.fill(hardwareVals, temp);
-        vals.time(true, 0.0);
-        vals.changedParts(true, changedParts);
-        vals.runValues(true, runVals);
-        vals.hardware(true, hardwareVals);
+        vals.setup(config.hardware.size());
         //voltMult = 13.0/config.voltSense.getVoltage();
         config.setBulkCachingManual();
     }
@@ -62,6 +59,7 @@ public class HardwareThread extends Thread {
                 d.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 d.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
+            vals.clear();
         }
     }
 
@@ -81,8 +79,8 @@ public class HardwareThread extends Thread {
 
         this.changedParts = changedParts.clone();
 
-        for(int i = 0; i < config.hardware.size(); i++) {
-            if (this.changedParts[i])
+        for(int i = 0; i < this.changedParts.length; i++) {
+            if (config.hardware.get(i).getClassification() == DriveObject.classification.Drivetrain || (this.changedParts[i] != null && this.changedParts[i]))
                 hardwareVals[i] = config.hardware.get(i).getHardware();
         }
     }
@@ -93,8 +91,8 @@ public class HardwareThread extends Thread {
         for(int i = 0; i < Values.length; i++) runVals[i] = Values[i];
         this.changedParts = changedParts.clone();
 
-        for(int i = 0; i < config.hardware.size(); i++) {
-            if (this.changedParts[i] && config.hardware.get(i).getClassification() != DriveObject.classification.Sensor)
+        for(int i = 0; i < this.changedParts.length; i++) {
+            if (this.changedParts[i] != null && this.changedParts[i] && config.hardware.get(i).getClassification() != DriveObject.classification.Sensor)
                 config.hardware.get(i).setHardware(runVals[i]);
         }
     }
