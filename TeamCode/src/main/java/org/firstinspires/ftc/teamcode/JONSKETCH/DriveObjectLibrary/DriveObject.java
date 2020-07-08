@@ -393,17 +393,30 @@ public class DriveObject {
     }
 
     public Thread groupSetTargetPosition(int targetPos, double maxSpeed, double tolerance, DriveObject ...drive){
-        for(DriveObject d : drive) if(d.getClassification() != classification.toPosition) return null;
+        boolean isIn = false;
+        DriveObject[] drive2 = new DriveObject[drive.length + 1];
+        for(int i = 0; i < drive.length; i++) {
+            DriveObject d = drive[i];
+            //if(d.getClassification() != classification.toPosition) return null;
+            //Switch this later
+            if(d == this) isIn = true;
+            drive2[i] = d;
+        }
+        if(!isIn) drive2[drive.length] = this;
         //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
         if(posThread != null && posThread.isAlive()) posThread.Stop();
-        posThread = new PositionThread(targetPos, maxSpeed, tolerance, drive);
+        posThread = new PositionThread(targetPos, maxSpeed, tolerance, drive2);
         posThread.start();
         return posThread;
     }
 
     public Thread groupSetTargetPosition(int targetPos, double maxSpeed, double tolerance, ArrayList<DriveObject> drive){
-        for(DriveObject d : drive) if(d.getClassification() != classification.toPosition) return null;
-        //if(pos.isAlive()) pos.stopPart(partNum); //Currently starting a new thread breaks a part
+        boolean isIn = false;
+        for(DriveObject d : drive) {
+            //if(d.getClassification() != classification.toPosition) return null;
+            if(d == this) isIn = true;
+        }
+        if(!isIn) drive.add(this);
         if(posThread != null && posThread.isAlive()) posThread.Stop();
         DriveObject[] d = new DriveObject[drive.size()];
         int i = 0;

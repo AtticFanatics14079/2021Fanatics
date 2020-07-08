@@ -88,10 +88,17 @@ public class PositionThread extends Thread {
         return velocity;
     }
 
+    //Written with the assumption that all motors are "working together" so to speak and have the same PID (aka is intended for two-motor scissor-lifts,
+    //two-motor intakes, drivetrain movements, etc.)
     private double groupToPosition(){
         double velocity = 0;
         error = pos;
-        for(DriveObject n : drive) error -= n.get()/4.0;
+        for(DriveObject n : drive) {
+            if(drive.get(0).getClassification() == DriveObject.classification.Drivetrain) {
+                error = pos - drive.get(0).get(1);
+            }
+            else error -= n.get()/4.0;
+        }
         totalError += error;
         velocity += PID.get(0)[0] * error;
         velocity += PID.get(0)[1] * totalError;
