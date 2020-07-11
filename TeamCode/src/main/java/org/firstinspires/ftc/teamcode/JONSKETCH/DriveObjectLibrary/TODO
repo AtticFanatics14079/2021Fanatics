@@ -1,6 +1,5 @@
 - Test ConfigurationRR
 - Test Odometry
-- Fix PositionThread to work with groups using tolerance
 - At this point, clean up recording and re-running software. Should not be much work, but optimize and use new DriveObjects more liberally
 - Add ways for recording software to measure target positions easier
 - WRITE USER GUIDE (aka README) so I don't need to explain (and so the explanation makes sense)
