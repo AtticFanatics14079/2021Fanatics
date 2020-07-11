@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Vision;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -35,8 +34,8 @@ import java.util.List;
  *YES
  */
 @Config
-@Autonomous(name= "SampleCVOpMode")
-public class SampleCVOpMode extends LinearOpMode {
+@Autonomous(name= "testCopy")
+public class AvgPixelColorOpMode extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //0 means skystone, 1 means yellow stone
