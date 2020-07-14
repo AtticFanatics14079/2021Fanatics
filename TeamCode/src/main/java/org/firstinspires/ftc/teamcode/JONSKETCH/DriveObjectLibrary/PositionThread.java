@@ -11,7 +11,7 @@ public class PositionThread extends Thread {
     private int pos; //Arrays are all ordered according to partNum.
     private double lastTime, tolerance, error, totalError, lastError, maxSpeed;
     private volatile ArrayList<DriveObject> drive = new ArrayList<>();
-    private volatile ArrayList<Double[]> PID = new ArrayList<>();
+    private volatile ArrayList<double[]> PID = new ArrayList<>();
     private boolean stillGoing = true, group = false;
     private volatile boolean stop;
 
@@ -70,10 +70,7 @@ public class PositionThread extends Thread {
 
     private double toPosition(){
         double velocity = 0;
-        error = pos - drive.get(0).get();
-        if(drive.get(0).getClassification() == DriveObject.classification.Drivetrain) {
-            error = pos - drive.get(0).get(1);
-        }
+        error = pos - drive.get(0).get(1);
         totalError += error;
         velocity += PID.get(0)[0] * error;
         velocity += PID.get(0)[1] * totalError;
@@ -94,10 +91,7 @@ public class PositionThread extends Thread {
         double velocity = 0;
         error = pos;
         for(DriveObject n : drive) {
-            if(drive.get(0).getClassification() == DriveObject.classification.Drivetrain) {
-                error = pos - drive.get(0).get(1);
-            }
-            else error -= n.get()/4.0;
+            error -= (pos - n.get(1))/4.0;
         }
         totalError += error;
         velocity += PID.get(0)[0] * error;

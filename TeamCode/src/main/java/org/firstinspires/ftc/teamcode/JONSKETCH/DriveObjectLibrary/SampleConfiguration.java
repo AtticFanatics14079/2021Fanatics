@@ -16,10 +16,10 @@ public class SampleConfiguration implements Configuration{
         //In this example, "left_back_motor" is whatever your configuration says.
         int i = 0;
         hardware.clear();
-        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "back_left_motor", DriveObject.classification.Drivetrain, vals, i++, hwMap));
-        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "front_left_motor", DriveObject.classification.Drivetrain, vals, i++, hwMap));
-        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "front_right_motor", DriveObject.classification.Drivetrain, vals, i++, hwMap));
-        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "back_right_motor", DriveObject.classification.Drivetrain, vals, i++, hwMap));
+        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "back_left_motor", vals, i++, hwMap));
+        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "front_left_motor", vals, i++, hwMap));
+        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "front_right_motor", vals, i++, hwMap));
+        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "back_right_motor", vals, i++, hwMap));
         /*hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "ingester", DriveObject.classification.Default, vals, i++, hwMap));
         hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "scissor_left", DriveObject.classification.toPosition, vals, i++, hwMap));
         hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "scissor_right", DriveObject.classification.toPosition, vals, i++, hwMap));

@@ -15,7 +15,6 @@ public class Test extends LinearOpMode {
         HardwareThread hardware = new HardwareThread(vals, hardwareMap, config);
         hardware.start();
         for(DriveObject d : hardware.config.hardware) {
-            d.setClassification(DriveObject.classification.toPosition);
             d.setPID(2, 0.000005, 0.5);
         }
         //System.out.println(hardware.config.hardware.get(0).getPID()[0] + " hf");

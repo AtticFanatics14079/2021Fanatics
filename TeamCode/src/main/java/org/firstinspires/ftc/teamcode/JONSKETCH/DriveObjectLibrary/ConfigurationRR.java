@@ -151,10 +151,10 @@ public class ConfigurationRR extends MecanumDrive implements Configuration{
         //Example: hardware.put("motor1", new DriveObject(DriveObject.type.DcMotorImplEx, "left_back_motor", DriveObject.classification.Drivetrain, hwMap));
         //In this example, "left_back_motor" is whatever your configuration says.
         int i = 0;
-        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "back_left_motor", DriveObject.classification.Drivetrain, vals, i++, hwMap));
-        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "front_left_motor", DriveObject.classification.Drivetrain, vals, i++, hwMap));
-        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "front_right_motor", DriveObject.classification.Drivetrain, vals, i++, hwMap));
-        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "back_right_motor", DriveObject.classification.Drivetrain, vals, i++, hwMap));
+        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "back_left_motor", vals, i++, hwMap));
+        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "front_left_motor", vals, i++, hwMap));
+        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "front_right_motor", vals, i++, hwMap));
+        hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "back_right_motor", vals, i++, hwMap));
         /*hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "ingester", DriveObject.classification.Default, vals, i++, hwMap));
         hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "scissor_left", DriveObject.classification.toPosition, vals, i++, hwMap));
         hardware.add(new DriveObject(DriveObject.type.DcMotorImplEx, "scissor_right", DriveObject.classification.toPosition, vals, i++, hwMap));
@@ -339,7 +339,7 @@ public class ConfigurationRR extends MecanumDrive implements Configuration{
     }
 
     public PIDCoefficients getPIDCoefficients() { //Removed DcMotor.RunMode runMode
-        Double[] temp = motors.get(0).getPID();
+        double[] temp = motors.get(0).getPID();
         PIDFCoefficients coefficients = new PIDFCoefficients(temp[0], temp[1], temp[2], temp[3]); //Change last value later
         return new PIDCoefficients(coefficients.p, coefficients.i, coefficients.d);
     }

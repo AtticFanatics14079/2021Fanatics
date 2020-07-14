@@ -28,7 +28,7 @@ public class DriveObject {
 
     private int partNum;
 
-    private Double[] pid = {30.0, 0.0, 0.0, 3000.0}; //Default values
+    private double[] pid = {30.0, 0.0, 0.0, 3000.0}; //Default values
 
     private PositionThread posThread;
     private TimeThread timeThread;
@@ -43,14 +43,9 @@ public class DriveObject {
         DcMotorImplEx, Servo, CRServo, IMU, TouchSensor, Odometry, Null
     }
 
-    public enum classification{
-        Drivetrain, toPosition, Default, Sensor
-    }
-
     private type thisType;
-    private classification thisClass;
 
-    public DriveObject(type typeName, String objectName, classification classifier, ValueStorage vals, int partNum, HardwareMap ahwMap){
+    public DriveObject(type typeName, String objectName, ValueStorage vals, int partNum, HardwareMap ahwMap){
 
         this.objectName = objectName;
 
@@ -62,21 +57,17 @@ public class DriveObject {
 
         thisType = typeName;
 
-        thisClass = classifier;
-
         switch(thisType){
             case DcMotorImplEx:
                 motor = hwMap.get(DcMotorImplEx.class, objectName);
                 break;
             case Servo:
-                thisClass = classification.toPosition;
                 servo = hwMap.get(Servo.class, objectName);
                 break;
             case CRServo:
                 crservo = hwMap.get(CRServo.class, objectName);
                 break;
             case IMU:
-                thisClass = classification.Sensor;
                 imu = hwMap.get(BNO055IMU.class, "imu");
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
                 parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
@@ -102,10 +93,6 @@ public class DriveObject {
         return objectName;
     }
 
-    public classification getClassification(){
-        return thisClass;
-    }
-
     public int getPartNum(){return partNum;}
 
     //SECTION 2 : Set Methods for Private Variables
@@ -118,38 +105,24 @@ public class DriveObject {
         objectName = n;
     }
 
-    public void setClassification(classification c){
-        thisClass = c;
-    }
-
     public void setPartNum(int p){partNum = p;}
 
     //SECTION 3 : Getting Hardware Values
 
-    public Double[] getHardware(){
+    public double[] getHardware(){
         switch(thisType){
             case DcMotorImplEx:
-                switch(thisClass){
-                    case toPosition:
-                        return new Double[]{(double) motor.getCurrentPosition(), motor.getVelocity()};
-                    case Drivetrain:
-                        return new Double[]{motor.getVelocity(), (double) motor.getCurrentPosition()};
-                    case Default:
-                        return new Double[]{motor.getVelocity(), (double) motor.getCurrentPosition()};
-                    default:
-                        System.out.println("Invalid type/classifier combination.");
-                        return null;
-                }
+                return new double[]{motor.getVelocity(), (double) motor.getCurrentPosition()};
             case Servo:
-                return new Double[]{servo.getPosition()}; //Fill in null for all values past usable and before reaching maxValues in ValueStorage
+                return new double[]{servo.getPosition()}; //Fill in null for all values past usable and before reaching maxValues in ValueStorage
             case CRServo:
-                return new Double[]{crservo.getPower()};
+                return new double[]{crservo.getPower()};
             case IMU:
-                return new Double[]{(double) imu.getAngularOrientation().firstAngle, (double) imu.getAngularOrientation().secondAngle}; //Can add more returns here
+                return new double[]{(double) imu.getAngularOrientation().firstAngle, (double) imu.getAngularOrientation().secondAngle}; //Can add more returns here
             case TouchSensor:
-                return new Double[]{touch.getValue()};
+                return new double[]{touch.getValue()};
             case Odometry:
-                Double[] vals = new Double[odometryWheels.length + 1];
+                double[] vals = new double[odometryWheels.length + 1];
                 for(int i = 1; i < odometryWheels.length; i++) vals[i] = (double) odometryWheels[i].getCurrentPosition();
                 return vals; //May be able to return velocity here, not sure if rolling works for velocity.
             default:
@@ -158,15 +131,15 @@ public class DriveObject {
         }
     }
 
-    public Double get(){
+    public double get(){
         return vals.hardware(false, null)[partNum][0];
     }
 
-    public Double get(int VariableNum){
+    public double get(int VariableNum){
         return vals.hardware(false, null)[partNum][VariableNum];
     }
 
-    public Double[] getAllVals(){
+    public double[] getAllVals(){
         return vals.hardware(false, null)[partNum];
     }
 
@@ -175,72 +148,33 @@ public class DriveObject {
     public void setHardware(double Value){
         switch(thisType){
             case DcMotorImplEx:
-                switch(thisClass){
-                    case Drivetrain:
-                        motor.setVelocity(Value);
-                        break;
-                    case toPosition:
-                        motor.setVelocity(Value);
-                        break;
-                    case Default:
-                        motor.setVelocity(Value);
-                        break;
-                    default:
-                        System.out.println("Invalid type/classifier combination.");
-                        break;
-                }
+                motor.setVelocity(Value);
                 break;
             case Servo:
                 servo.setPosition(Value);
                 break;
             case CRServo:
-                switch(thisClass){
-                    case Drivetrain:
-                        crservo.setPower(Value);
-                        break;
-                    case Default:
-                        crservo.setPower(Value);
-                        break;
-                    default:
-                        System.out.println("Invalid type/classifier combination.");
-                        break;
-                }
+                crservo.setPower(Value);
                 break;
             default:
-                System.out.println("Invalid type for setting.");
                 break;
         }
     }
 
-    public Thread set(double Value){
-        Double[] p = new Double[partNum + 1];
+    public void set(double Value){
+        double[] p = new double[partNum + 1];
         Boolean[] b = new Boolean[partNum + 1];
         for(int i = 0; i <= partNum; i++) {
-            p[i] = null;
+            p[i] = -100000; //Is random value that will never be used, change if possibility to be used
             b[i] = null;
         }
         switch(thisType){
             case DcMotorImplEx:
-                switch(thisClass){
-                    case Drivetrain:
-                        p[partNum] = Value;
-                        b[partNum] = true;
-                        vals.changedParts(true, b);
-                        vals.runValues(true, p);
-                        //Maybe apply something to limit acceleration, but for now, just set power.
-                        break;
-                    case toPosition:
-                        setTargetPosition((int) Value, 1.0);
-                    case Default:
-                        p[partNum] = Value;
-                        b[partNum] = true;
-                        vals.changedParts(true, b);
-                        vals.runValues(true, p);
-                        break;
-                    default:
-                        System.out.println("Invalid type/classifier combination.");
-                        break;
-                }
+                p[partNum] = Value;
+                b[partNum] = true;
+                vals.changedParts(true, b);
+                vals.runValues(true, p);
+                //Maybe apply something to limit acceleration, but for now, just set power.
                 break;
             case Servo:
                 p[partNum] = Value;
@@ -249,37 +183,23 @@ public class DriveObject {
                 vals.runValues(true, p);
                 break;
             case CRServo:
-                switch(thisClass){
-                    case Drivetrain:
-                        p[partNum] = Value;
-                        b[partNum] = true;
-                        vals.changedParts(true, b);
-                        vals.runValues(true, p);
-                        //See above for further changes.
-                        break;
-                    case Default:
-                        p[partNum] = Value;
-                        b[partNum] = true;
-                        vals.changedParts(true, b);
-                        vals.runValues(true, p);
-                        break;
-                    default:
-                        System.out.println("Invalid type/classifier combination.");
-                        break;
-                }
+                p[partNum] = Value;
+                b[partNum] = true;
+                vals.changedParts(true, b);
+                vals.runValues(true, p);
+                //See above for further changes.
                 break;
             default:
                 System.out.println("Invalid type for setting.");
                 break;
         }
-        return null;
     }
 
     public void setPower(double Power){
-        Double[] p = new Double[partNum + 1];
+        double[] p = new double[partNum + 1];
         Boolean[] b = new Boolean[partNum + 1];
         for(int i = 0; i <= partNum; i++) {
-            p[i] = null;
+            p[i] = -100000;
             b[i] = null;
         }
         p[partNum] = Power;
@@ -320,10 +240,7 @@ public class DriveObject {
     //SECTION 6 : Thread Shenanigans
 
     public Thread setPower(double Power, double Seconds){
-        if(thisClass != classification.Default && thisClass != classification.Drivetrain) {
-            System.out.println("Invalid type for setting power.");
-            return null;
-        }
+        if(thisType != type.DcMotorImplEx && thisType != type.CRServo) return null;
         timeThread = new TimeThread(Power, Seconds, this);
         //NOTE: If a TimeThread is called twice on the same motor, the first will not be overridden. May change this later.
         timeThread.start();
@@ -331,19 +248,12 @@ public class DriveObject {
     }
 
     public Thread setTargetPosition(double targetPosition, double maxSpeed){
-        /*if(thisClass != classification.toPosition){
-            System.out.println("Invalid call.");
-            return null;
-        }
-
-         */
-        //See below
         switch(thisType){
             case Servo:
-                Double[] p = new Double[partNum + 1];
+                double[] p = new double[partNum + 1];
                 Boolean[] b = new Boolean[partNum + 1];
                 for(int i = 0; i < partNum; i++) {
-                    p[i] = null;
+                    p[i] = -100000;
                     b[i] = null;
                 }
                 p[partNum] = targetPosition;
@@ -362,19 +272,12 @@ public class DriveObject {
     }
 
     public Thread setTargetPosition(double targetPosition, double tolerance, double maxSpeed){
-        /*if(thisClass != classification.toPosition){
-            System.out.println("Invalid call.");
-            return null;
-        }
-
-         */
-        //Will come up with a better system to determine what can call setTargetPosition later.
         switch(thisType){
             case Servo:
-                Double[] p = new Double[partNum + 1];
+                double[] p = new double[partNum + 1];
                 Boolean[] b = new Boolean[partNum + 1];
                 for(int i = 0; i < partNum; i++) {
-                    p[i] = null;
+                    p[i] = -100000;
                     b[i] = null;
                 }
                 p[partNum] = targetPosition;
@@ -434,7 +337,7 @@ public class DriveObject {
 
     //SECTION 7 : Algorithm Variables (e.g. PID)
 
-    public Double[] getPID(){
+    public double[] getPID(){
         return pid;
     }
 
@@ -450,7 +353,7 @@ public class DriveObject {
         pid[3] = maxVelocity;
     }
 
-    public void setPID(Double[] pid){
+    public void setPID(double[] pid){
         this.pid = pid;
     }
 

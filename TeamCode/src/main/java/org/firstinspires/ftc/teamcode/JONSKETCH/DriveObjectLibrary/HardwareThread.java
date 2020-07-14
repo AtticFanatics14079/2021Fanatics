@@ -15,9 +15,9 @@ public class HardwareThread extends Thread {
 
     ElapsedTime time;
     private ValueStorage vals;
-    Double[][] hardwareVals; //See hardwareValues in ValueStorage for each value.
-    Boolean[] changedParts; //See hardwareValues in ValueStorage for each value.
-    Double[] runVals; //See hardwareValues in ValueStorage for each value.
+    double[][] hardwareVals; //See hardwareValues in ValueStorage for each value.
+    boolean[] changedParts; //See hardwareValues in ValueStorage for each value.
+    double[] runVals; //See hardwareValues in ValueStorage for each value.
     public Configuration config;
     //public ConfigurationRR config;
     private volatile boolean stop;
@@ -29,10 +29,10 @@ public class HardwareThread extends Thread {
         config = configuration;
         config.Configure(hwMap, valStorage);
         vals.setup(config.hardware.size());
-        Double[] temp = new Double[1];
-        runVals = new Double[config.hardware.size()];
-        hardwareVals = new Double[config.hardware.size()][temp.length];
-        changedParts = new Boolean[config.hardware.size()];
+        double[] temp = new double[1];
+        runVals = new double[config.hardware.size()];
+        hardwareVals = new double[config.hardware.size()][temp.length];
+        changedParts = new boolean[config.hardware.size()];
         Arrays.fill(changedParts, false);
         Arrays.fill(runVals, 0.0);
         Arrays.fill(temp, 0.0);
@@ -73,26 +73,26 @@ public class HardwareThread extends Thread {
         setTime = true;
     }
 
-    private void readHardware(Boolean[] changedParts){
+    private void readHardware(boolean[] changedParts){
 
         config.clearBulkCache();
 
         this.changedParts = changedParts.clone();
 
         for(int i = 0; i < this.changedParts.length; i++) {
-            if (config.hardware.get(i).getClassification() == DriveObject.classification.Drivetrain || (this.changedParts[i] != null && this.changedParts[i]))
+            if (this.changedParts[i])
                 hardwareVals[i] = config.hardware.get(i).getHardware();
         }
     }
 
-    private void runHardware(double[] Values, Boolean[] changedParts) {
+    private void runHardware(double[] Values, boolean[] changedParts) {
         //Same values for desiredParts as above's changedParts.
 
         for(int i = 0; i < Values.length; i++) runVals[i] = Values[i];
         this.changedParts = changedParts.clone();
 
         for(int i = 0; i < this.changedParts.length; i++) {
-            if (this.changedParts[i] != null && this.changedParts[i] && config.hardware.get(i).getClassification() != DriveObject.classification.Sensor)
+            if (this.changedParts[i])
                 config.hardware.get(i).setHardware(runVals[i]);
         }
     }

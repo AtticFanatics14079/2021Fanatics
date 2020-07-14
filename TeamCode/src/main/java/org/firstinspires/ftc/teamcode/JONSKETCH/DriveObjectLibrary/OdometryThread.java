@@ -29,7 +29,7 @@ public class OdometryThread extends Thread {
         ElapsedTime time = new ElapsedTime();
         while(!stop) {
             if(time.milliseconds() - lastTime >= 5) {
-                Double[] encoderVals = vals.hardware(false, null)[odo.getPartNum()];
+                double[] encoderVals = vals.hardware(false, null)[odo.getPartNum()];
                 switch (numWheels) {
                     case 3:
                         vals.runValues(true, threeWheel(encoderVals));
@@ -42,10 +42,10 @@ public class OdometryThread extends Thread {
         stop = true;
     }
 
-    public Double[] threeWheel(Double[] encoderVals) {
+    public double[] threeWheel(double[] encoderVals) {
         double x, y, heading;
         x = y = heading = 1; //Delete later
         //Logic to track position - probably gonna need a hand for this one, Antwon
-        return new Double[]{x, y, heading};
+        return new double[]{x, y, heading};
     }
 }
