@@ -74,7 +74,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<Pose2d> poseHistory;
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
-    private List<DcMotorEx> motors;
+    protected List<DcMotorEx> motors;
     private BNO055IMU imu;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
@@ -125,11 +125,11 @@ public class SampleMecanumDrive extends MecanumDrive {
             motor.setMotorType(motorConfigurationType);
         }
 
-        if (RUN_USING_ENCODER) {
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if(RUN_USING_ENCODER) {
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
