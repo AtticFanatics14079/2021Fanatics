@@ -30,6 +30,8 @@ public class DriveObject {
 
     private double[] pid = {30.0, 0.0, 0.0, 3000.0}; //Default values
 
+    private double[] p = new double[partNum + 1];
+
     private PositionThread posThread;
     private TimeThread timeThread;
     private OdometryThread odoThread;
@@ -81,6 +83,8 @@ public class DriveObject {
             case Odometry:
                 break;
         }
+
+        for(int i = 0; i < partNum; i++) p[i] = -100000;
     }
 
     //SECTION 1 : Get Methods for Private Variable Values
@@ -162,10 +166,8 @@ public class DriveObject {
     }
 
     public void set(double Value){
-        double[] p = new double[partNum + 1];
         Boolean[] b = new Boolean[partNum + 1];
         for(int i = 0; i <= partNum; i++) {
-            p[i] = -100000; //Is random value that will never be used, change if possibility to be used
             b[i] = null;
         }
         switch(thisType){
@@ -196,10 +198,8 @@ public class DriveObject {
     }
 
     public void setPower(double Power){
-        double[] p = new double[partNum + 1];
         Boolean[] b = new Boolean[partNum + 1];
         for(int i = 0; i <= partNum; i++) {
-            p[i] = -100000;
             b[i] = null;
         }
         p[partNum] = Power;
@@ -250,10 +250,8 @@ public class DriveObject {
     public Thread setTargetPosition(double targetPosition, double maxSpeed){
         switch(thisType){
             case Servo:
-                double[] p = new double[partNum + 1];
                 Boolean[] b = new Boolean[partNum + 1];
                 for(int i = 0; i < partNum; i++) {
-                    p[i] = -100000;
                     b[i] = null;
                 }
                 p[partNum] = targetPosition;
@@ -274,10 +272,8 @@ public class DriveObject {
     public Thread setTargetPosition(double targetPosition, double tolerance, double maxSpeed){
         switch(thisType){
             case Servo:
-                double[] p = new double[partNum + 1];
                 Boolean[] b = new Boolean[partNum + 1];
                 for(int i = 0; i < partNum; i++) {
-                    p[i] = -100000;
                     b[i] = null;
                 }
                 p[partNum] = targetPosition;

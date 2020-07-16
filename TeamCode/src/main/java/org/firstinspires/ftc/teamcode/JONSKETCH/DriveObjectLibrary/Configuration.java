@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface Configuration {
+interface Configuration {
 
     ArrayList<DriveObject> hardware = new ArrayList<>();
     void Configure(HardwareMap hwMap, ValueStorage vals);
