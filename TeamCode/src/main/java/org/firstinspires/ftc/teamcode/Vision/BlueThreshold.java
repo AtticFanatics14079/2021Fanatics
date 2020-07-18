@@ -109,10 +109,25 @@ public class BlueThreshold extends LinearOpMode {
             rawMat = input;
             Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(input, blueGrayScale, 2);
-           //Imgproc.cvtColor(input, blackWhite, Imgproc.COLOR_BGR2GRAY);
-           Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(21, 21),new Point(10,10));
-           Imgproc.morphologyEx(blueGrayScale, output, 2, element);
-           Imgproc.threshold(output, output, 150, 255, Imgproc.THRESH_BINARY);
+            //Imgproc.cvtColor(input, blackWhite, Imgproc.COLOR_BGR2GRAY);
+            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(21, 21),new Point(10,10));
+            Imgproc.morphologyEx(blueGrayScale, output, 2, element);
+            Imgproc.threshold(output, output, 150, 255, Imgproc.THRESH_BINARY);
+            int totalX = 0, totalY = 0, numPix = 0, leftEdge = 1000, rightEdge = 0;
+            for(int row = 0; row < output.rows(); row++) {
+                for(int col = 0; col < output.cols(); col++) {
+                    if(output.get(row, col)[0] == 255) {
+                        if(leftEdge > col) leftEdge = col;
+                        if(rightEdge < row) rightEdge = row;
+                        numPix++;
+                        totalX += col;
+                        totalY += row;
+                    }
+                }
+            }
+            totalX /= numPix;
+            totalY /= numPix;
+            Imgproc.circle(output, new Point(totalX, totalY), (rightEdge - leftEdge)/2, new Scalar(0, 255, 0), 2);
             switch (stageToRenderToViewport)
             {
                 case RAW:
