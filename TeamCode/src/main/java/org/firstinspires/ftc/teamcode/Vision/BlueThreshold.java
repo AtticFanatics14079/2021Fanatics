@@ -112,22 +112,27 @@ public class BlueThreshold extends LinearOpMode {
             //Imgproc.cvtColor(input, blackWhite, Imgproc.COLOR_BGR2GRAY);
             Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(21, 21),new Point(10,10));
             Imgproc.morphologyEx(blueGrayScale, output, 2, element);
-            Imgproc.threshold(output, output, 150, 255, Imgproc.THRESH_BINARY);
-            int totalX = 0, totalY = 0, numPix = 0, leftEdge = 1000, rightEdge = 0;
-            for(int row = 0; row < output.rows(); row++) {
-                for(int col = 0; col < output.cols(); col++) {
-                    if(output.get(row, col)[0] == 255) {
+            Imgproc.threshold(output, output, 155, 255, Imgproc.THRESH_BINARY);
+            int totalX = 0, totalY = 0, numPix = 0, leftEdge = 1000, rightEdge = 0, topEdge = 0, botEdge = 0;
+            for(int row = 0; row < output.rows(); row += 10) {
+                for(int col = 0; col < output.cols(); col += 10) {
+                    if(output.get(row, col)[0] > 145) {
                         if(leftEdge > col) leftEdge = col;
-                        if(rightEdge < row) rightEdge = row;
+                        if(rightEdge < col) rightEdge = col;
+                        if(topEdge == 0) topEdge = row;
+                        botEdge = row;
                         numPix++;
                         totalX += col;
                         totalY += row;
                     }
                 }
             }
+            if(numPix == 0) numPix = 1;
+            if(leftEdge == 1000) leftEdge = 0;
             totalX /= numPix;
             totalY /= numPix;
-            Imgproc.circle(output, new Point(totalX, totalY), (rightEdge - leftEdge)/2, new Scalar(0, 255, 0), 2);
+            Imgproc.cvtColor(output,output, Imgproc.COLOR_GRAY2RGB);
+            Imgproc.circle(output, new Point(totalX, totalY), Math.abs(((botEdge-topEdge)+(rightEdge-leftEdge))/4), new Scalar(0, 255, 0), 5);
             switch (stageToRenderToViewport)
             {
                 case RAW:
@@ -142,7 +147,7 @@ public class BlueThreshold extends LinearOpMode {
 
                 case BLACKWHITE:
                 {
-                    return input;
+                    return rawMat;
                 }
                 case OUTPUT:
                 {
