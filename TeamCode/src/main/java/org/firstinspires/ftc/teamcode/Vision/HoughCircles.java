@@ -64,6 +64,7 @@ public class HoughCircles extends LinearOpMode {
     {
         Mat rawMat = new Mat();
         Mat circleMat = new Mat();
+        Mat circles = new Mat();
 
         enum Stage
         {
@@ -100,9 +101,10 @@ public class HoughCircles extends LinearOpMode {
             rawMat = input;
             Imgproc.cvtColor(input, circleMat, Imgproc.COLOR_RGB2GRAY);
             Imgproc.medianBlur(circleMat, circleMat, 5);
-            Imgproc.HoughCircles(circleMat, circleMat, Imgproc.HOUGH_GRADIENT, 1.0, circleMat.rows()/16.0, 100.0, 30.0, 50, 100);
-            for (int x = 0; x < circleMat.cols(); x++) {
-                double[] c = circleMat.get(0, x);
+            Imgproc.HoughCircles(circleMat, circles, Imgproc.HOUGH_GRADIENT, 1.0, circleMat.rows()/16.0, 100.0, 32.0, 50, 100);
+            System.out.println("Houghcircles finished");
+            for (int x = 0; x < circles.cols(); x++) {
+                double[] c = circles.get(0, x);
                 Point center = new Point(Math.round(c[0]), Math.round(c[1]));
                 // circle center
                 Imgproc.circle(circleMat, center, 1, new Scalar(0,100,100), 3, 8, 0 );
