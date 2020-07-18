@@ -3,11 +3,9 @@ package org.firstinspires.ftc.teamcode.Vision;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -17,9 +15,6 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -35,7 +30,7 @@ import java.util.List;
  */
 @Config
 @Autonomous
-public class BlueThreshold extends LinearOpMode {
+public class HoughCircles extends LinearOpMode {
 
     private final int rows = 640;
     private final int cols = 480;
@@ -68,16 +63,12 @@ public class BlueThreshold extends LinearOpMode {
     static class StageSwitchingPipeline extends OpenCvPipeline
     {
         Mat rawMat = new Mat();
-        Mat blueGrayScale = new Mat();
-        Mat blackWhite = new Mat();
-        Mat output = new Mat();
+        Mat circleMat = new Mat();
 
         enum Stage
         {
             RAW,
-            BLUEGRAY,
-            BLACKWHITE,
-            OUTPUT,
+            CIRCLES
         }
 
         private Stage stageToRenderToViewport = Stage.RAW;
@@ -107,51 +98,27 @@ public class BlueThreshold extends LinearOpMode {
         public Mat processFrame(Mat input)
         {
             rawMat = input;
-            Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(input, blueGrayScale, 2);
-            Imgproc.cvtColor(input, blackWhite, Imgproc.COLOR_BGR2GRAY);
-            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(21, 21),new Point(10,10));
-            Imgproc.morphologyEx(blueGrayScale, output, 2, element);
-            Imgproc.threshold(output, output, 155, 255, Imgproc.THRESH_BINARY);
-            int totalX = 0, totalY = 0, numPix = 0, leftEdge = 1000, rightEdge = 0, topEdge = 0, botEdge = 0;
-            for(int row = 0; row < output.rows(); row += 10) {
-                for(int col = 0; col < output.cols(); col += 10) {
-                    if(output.get(row, col)[0] > 145) {
-                        if(leftEdge > col) leftEdge = col;
-                        if(rightEdge < col) rightEdge = col;
-                        if(topEdge == 0) topEdge = row;
-                        botEdge = row;
-                        numPix++;
-                        totalX += col;
-                        totalY += row;
-                    }
-                }
+            Imgproc.cvtColor(input, circleMat, Imgproc.COLOR_RGB2GRAY);
+            Imgproc.medianBlur(circleMat, circleMat, 5);
+            Imgproc.HoughCircles(circleMat, circleMat, Imgproc.HOUGH_GRADIENT, 1.0, circleMat.rows()/16.0, 100.0, 30.0, 50, 100);
+            for (int x = 0; x < circleMat.cols(); x++) {
+                double[] c = circleMat.get(0, x);
+                Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+                // circle center
+                Imgproc.circle(circleMat, center, 1, new Scalar(0,100,100), 3, 8, 0 );
+                // circle outline
+                int radius = (int) Math.round(c[2]);
+                Imgproc.circle(circleMat, center, radius, new Scalar(255,0,255), 3, 8, 0 );
             }
-            if(numPix == 0) numPix = 1;
-            if(leftEdge == 1000) leftEdge = 0;
-            totalX /= numPix;
-            totalY /= numPix;
-            Imgproc.cvtColor(output,output, Imgproc.COLOR_GRAY2RGB);
-            Imgproc.circle(output, new Point(totalX, totalY), Math.abs(((botEdge-topEdge)+(rightEdge-leftEdge))/4), new Scalar(0, 255, 0), 5);
             switch (stageToRenderToViewport)
             {
                 case RAW:
                 {
                     return rawMat;
                 }
-
-                case BLUEGRAY:
+                case CIRCLES:
                 {
-                    return blueGrayScale;
-                }
-
-                case BLACKWHITE:
-                {
-                    return rawMat;
-                }
-                case OUTPUT:
-                {
-                    return output;
+                    return circleMat;
                 }
                 default:
                 {
