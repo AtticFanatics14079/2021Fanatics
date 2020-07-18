@@ -107,11 +107,12 @@ public class BlueThreshold extends LinearOpMode {
         public Mat processFrame(Mat input)
         {
             rawMat = input;
+            Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(input, blueGrayScale, 2);
-           Imgproc.cvtColor(input, blackWhite, Imgproc.COLOR_BGR2GRAY);
+           //Imgproc.cvtColor(input, blackWhite, Imgproc.COLOR_BGR2GRAY);
            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(21, 21),new Point(10,10));
            Imgproc.morphologyEx(blueGrayScale, output, 2, element);
-
+           Imgproc.threshold(output, output, 150, 255, Imgproc.THRESH_BINARY);
             switch (stageToRenderToViewport)
             {
                 case RAW:
@@ -126,7 +127,7 @@ public class BlueThreshold extends LinearOpMode {
 
                 case BLACKWHITE:
                 {
-                    return blackWhite;
+                    return input;
                 }
                 case OUTPUT:
                 {
