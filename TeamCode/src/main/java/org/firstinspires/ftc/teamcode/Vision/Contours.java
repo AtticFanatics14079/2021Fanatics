@@ -7,7 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -99,12 +101,35 @@ public class Contours extends LinearOpMode {
             Imgproc.Canny(grayMat, contoursMat, 40, 80, 3, false);
             List<MatOfPoint> contours = new ArrayList<>();
             Imgproc.findContours(contoursMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-
             Mat drawing = Mat.zeros(contoursMat.size(), CvType.CV_8UC3);
+
+            MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
+            Rect[] boundRect = new Rect[contours.size()];
+            Point[] centers = new Point[contours.size()];
+            float[][] radius = new float[contours.size()][1];
             for (int i = 0; i < contours.size(); i++) {
+                contoursPoly[i] = new MatOfPoint2f();
+                Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
+                boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
+                centers[i] = new Point();
+                Imgproc.minEnclosingCircle(contoursPoly[i], centers[i], radius[i]);
+            }
+            List<MatOfPoint> contoursPolyList = new ArrayList<>(contoursPoly.length);
+            for (MatOfPoint2f poly : contoursPoly) {
+                contoursPolyList.add(new MatOfPoint(poly.toArray()));
+            }
+            for (int i = 0; i < contours.size(); i++) {
+                Scalar color = new Scalar(0, 255, 0);
+                Imgproc.drawContours(drawing, contoursPolyList, i, color);
+                Imgproc.rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
+                Imgproc.circle(drawing, centers[i], (int) radius[i][0], color, 2);
+            }
+
+            /*for (int i = 0; i < contours.size(); i++) {
                 Scalar color = new Scalar(0, 255, 255);
                 Imgproc.drawContours(drawing, contours, i, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
             }
+             */
 
             switch (stageToRenderToViewport)
             {
