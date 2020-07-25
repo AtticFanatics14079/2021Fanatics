@@ -96,9 +96,11 @@ public class Contours extends LinearOpMode {
         public Mat processFrame(Mat input)
         {
             rawMat = input;
-            Imgproc.GaussianBlur(rawMat, grayMat, new Size(3,3),0,0);
+            Imgproc.GaussianBlur(rawMat, grayMat, new Size(5,5),0,0);
             Imgproc.cvtColor(grayMat, grayMat, Imgproc.COLOR_BGR2GRAY);
-            Imgproc.Canny(grayMat, contoursMat, 40, 80, 3, false);
+            Imgproc.Canny(grayMat, contoursMat, 100, 300, 3, false);
+            Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5,5));
+            Imgproc.dilate(contoursMat,contoursMat,kernel);
             List<MatOfPoint> contours = new ArrayList<>();
             Imgproc.findContours(contoursMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
             Mat drawing = Mat.zeros(contoursMat.size(), CvType.CV_8UC3);
@@ -121,8 +123,9 @@ public class Contours extends LinearOpMode {
             for (int i = 0; i < contours.size(); i++) {
                 Scalar color = new Scalar(0, 255, 0);
                 Imgproc.drawContours(drawing, contoursPolyList, i, color);
-                Imgproc.rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
+                //Imgproc.rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
                 Imgproc.circle(drawing, centers[i], (int) radius[i][0], color, 2);
+                Imgproc.putText(drawing, "Points: " + contoursPoly[i].rows(), boundRect[i].tl(), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
             }
 
             /*for (int i = 0; i < contours.size(); i++) {
