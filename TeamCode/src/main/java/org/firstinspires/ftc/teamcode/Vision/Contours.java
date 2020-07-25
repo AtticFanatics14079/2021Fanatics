@@ -24,8 +24,8 @@ import java.util.List;
 @Autonomous
 public class Contours extends LinearOpMode {
 
-    private final int rows = 640;
-    private final int cols = 480;
+    private final int rows = 320;
+    private final int cols = 240;
 
     OpenCvCamera phoneCam;
 
@@ -58,6 +58,7 @@ public class Contours extends LinearOpMode {
         Mat grayMat = new Mat();
         Mat hierarchy = new Mat();
         Mat contoursMat = new Mat();
+        Mat horizontalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5,5));
 
         enum Stage
         {
@@ -95,11 +96,9 @@ public class Contours extends LinearOpMode {
             rawMat = input;
             Imgproc.GaussianBlur(rawMat, grayMat, new Size(3,3),0,0);
             Imgproc.cvtColor(grayMat, grayMat, Imgproc.COLOR_BGR2GRAY);
-            Imgproc.Canny(grayMat, contoursMat, 50, 150, 3, false);
+            Imgproc.Canny(grayMat, contoursMat, 40, 80, 3, false);
             List<MatOfPoint> contours = new ArrayList<>();
             Imgproc.findContours(contoursMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-            Mat horizontalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5,5));
-            Imgproc.dilate(contoursMat, contoursMat, horizontalStructure);
 
             Mat drawing = Mat.zeros(contoursMat.size(), CvType.CV_8UC3);
             for (int i = 0; i < contours.size(); i++) {
