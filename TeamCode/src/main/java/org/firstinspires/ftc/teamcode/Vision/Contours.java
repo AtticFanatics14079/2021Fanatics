@@ -31,6 +31,7 @@ public class Contours extends LinearOpMode {
     private final int cols = 480;
 
     OpenCvCamera phoneCam;
+    CameraDetect flashlight = new CameraDetect();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -40,6 +41,10 @@ public class Contours extends LinearOpMode {
         phoneCam.openCameraDevice();//open camera
         phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
         phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC
+
+        flashlight.instantCamera(hardwareMap);
+        CameraDevice.getInstance().setFlashTorchMode(true);
+
         //width, height
         //width = height in this case, because camera is in portrait mode.
 
