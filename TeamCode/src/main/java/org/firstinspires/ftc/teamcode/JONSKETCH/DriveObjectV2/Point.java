@@ -1,22 +1,22 @@
-package org.firstinspires.ftc.teamcode.Autonomous.PurePursuit;
-
+package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectV2;
 
 public class Point{
-    double x;
-    double y;
 
-    public Point(double x, double y) {
+    public double x;
+    public double y;
+    public double heading;
+
+    Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public double getx() {
-        return x;
+    Point(double x, double y, double angle) {
+        this.x = x;
+        this.y = y;
+        this.heading = angle;
     }
 
-    public double gety() {
-        return y;
-    }
     public Point add(Point other) {
         return new Point(x - other.x, y - other.y);
     }

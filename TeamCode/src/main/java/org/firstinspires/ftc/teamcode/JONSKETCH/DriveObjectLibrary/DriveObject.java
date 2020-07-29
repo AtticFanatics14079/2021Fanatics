@@ -357,13 +357,14 @@ public class DriveObject {
 
     //If 2-wheel odo, length can be set to 0.
     //Can add dependencies for different odo configurations later.
+    //Order (in 3-wheel) is left, then right, then front
     public void startOdometryTracking(int width, int length, String... trackingWheelNames) {
         if(thisType != type.Odometry) return;
         odometryWheels = new DcMotorImplEx[trackingWheelNames.length];
         for(int i = 0; i < trackingWheelNames.length; i++) {
             odometryWheels[i] = hwMap.get(DcMotorImplEx.class, trackingWheelNames[i]);
         }
-        int[] dimensions = new int[]{width, length};
+        double[] dimensions = new double[]{width, length};
         if(odoThread != null && odoThread.isAlive()) odoThread.Stop();
         odoThread = new OdometryThread(odometryWheels.length, this, vals, dimensions);
         odoThread.start();

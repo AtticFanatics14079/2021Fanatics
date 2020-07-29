@@ -1,0 +1,10 @@
+- Finish re-adding features of original DriveObject library
+
+Known potential issues:
+- RoadRunner may skip past "motors" and therefore ignore DriveObject's system (!)
+- No way to recognize end of servo movement (?)
+
+Shortcuts:
+- -> means implies
+- (?) -> not sure if needed
+- (!) -> unsure if system works (aka needs testing)
