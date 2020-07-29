@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Vision;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.CameraDevice;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -26,8 +27,8 @@ import java.util.List;
 @Autonomous
 public class Contours extends LinearOpMode {
 
-    private final int rows = 320;
-    private final int cols = 240;
+    private final int rows = 640;
+    private final int cols = 480;
 
     OpenCvCamera phoneCam;
 
@@ -61,11 +62,13 @@ public class Contours extends LinearOpMode {
         Mat hierarchy = new Mat();
         Mat contoursMat = new Mat();
         Mat horizontalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5,5));
-
         enum Stage
         {
             RAW,
-            COOKED
+            BLUR,
+            DILATE,
+            CANNY,
+            OUTPUT
         }
 
         private StageSwitchingPipeline.Stage stageToRenderToViewport = StageSwitchingPipeline.Stage.RAW;
@@ -96,11 +99,15 @@ public class Contours extends LinearOpMode {
         public Mat processFrame(Mat input)
         {
             rawMat = input;
-            Imgproc.GaussianBlur(rawMat, grayMat, new Size(5,5),0,0);
-            Imgproc.cvtColor(grayMat, grayMat, Imgproc.COLOR_BGR2GRAY);
-            Imgproc.Canny(grayMat, contoursMat, 100, 300, 3, false);
-            Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5,5));
-            Imgproc.dilate(contoursMat,contoursMat,kernel);
+            Imgproc.GaussianBlur(rawMat, rawMat, new Size(5,5),0,0);
+            Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_BGR2GRAY);
+            Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3));
+            Imgproc.Canny(grayMat, contoursMat, 100,300, 3, false);
+
+            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(21,21),new Point(10,10));
+            Imgproc.morphologyEx(contoursMat,contoursMat,3, element);
+
+
             List<MatOfPoint> contours = new ArrayList<>();
             Imgproc.findContours(contoursMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
             Mat drawing = Mat.zeros(contoursMat.size(), CvType.CV_8UC3);
@@ -134,10 +141,17 @@ public class Contours extends LinearOpMode {
             }
              */
 
-            switch (stageToRenderToViewport)
-            {
-                case COOKED:
-                {
+            switch (stageToRenderToViewport) {
+                case BLUR: {
+                    return rawMat;
+                }
+                case DILATE: {
+                    return grayMat;
+                }
+                case CANNY: {
+                    return contoursMat;
+                }
+                case OUTPUT: {
                     return drawing;
                 }
                 default:
