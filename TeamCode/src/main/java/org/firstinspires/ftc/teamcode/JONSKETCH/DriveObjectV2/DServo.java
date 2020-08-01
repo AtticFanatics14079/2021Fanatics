@@ -25,6 +25,10 @@ public class DServo implements DriveObject{
         vals.runValues(true, position, partNum);
     }
 
+    public int getPartNum() {
+        return partNum;
+    }
+
     public double[] get() {
         return vals.hardware(false, null, partNum);
     }

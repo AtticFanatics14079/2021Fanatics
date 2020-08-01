@@ -29,6 +29,10 @@ public class DMotor implements DriveObject {
         vals.runValues(true, velocity, partNum);
     }
 
+    public int getPartNum() {
+        return partNum;
+    }
+
     public double[] get() {
         return vals.hardware(false, null, partNum);
     }
