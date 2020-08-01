@@ -119,11 +119,13 @@ public class Contours extends LinearOpMode {
             black = new Mat(input.size(), input.type(), Scalar.all(0));
             Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_BGR2GRAY);
             Imgproc.GaussianBlur(grayMat, blurredMat, new Size(3,3),0,0);
-            Imgproc.Canny(blurredMat, blurredMat, 50, 150, 3, false);
-            input.copyTo(black, blurredMat);
+            Imgproc.Canny(blurredMat, CannyMat, 50, 150, 3, false);
+            input.copyTo(black, CannyMat);
+            System.out.println("1");
 
             Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(21,21), new Point(10,10));
             Imgproc.morphologyEx(black,ClosedMat,3, element);
+            System.out.println("2");
             Imgproc.cvtColor(ClosedMat,ClosedMat, Imgproc.COLOR_RGB2GRAY);
 
             List<MatOfPoint> contours = new ArrayList<>();
