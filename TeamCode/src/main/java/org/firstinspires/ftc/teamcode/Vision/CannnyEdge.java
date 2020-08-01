@@ -8,7 +8,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -17,6 +20,10 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Config
 @Autonomous
 public class CannnyEdge extends LinearOpMode {
@@ -55,6 +62,8 @@ public class CannnyEdge extends LinearOpMode {
         Mat grayMat = new Mat();
         Mat detectedEdges = new Mat();
         Mat black = new Mat();
+        Mat closedMat = new Mat();
+        Mat hierarchy = new Mat();
 
 
         enum Stage
@@ -96,6 +105,38 @@ public class CannnyEdge extends LinearOpMode {
             Imgproc.GaussianBlur(grayMat, detectedEdges, new Size(3,3),0,0);
             Imgproc.Canny(detectedEdges, detectedEdges, 50, 150, 3, false);
             input.copyTo(black, detectedEdges);
+
+            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(21,21), new Point(10,10));
+            Imgproc.morphologyEx(black,closedMat,3, element);
+            System.out.println("2");
+            Imgproc.cvtColor(closedMat,closedMat, Imgproc.COLOR_RGB2GRAY);
+
+            List<MatOfPoint> contours = new ArrayList<>();
+            Imgproc.findContours(closedMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            Mat drawing = Mat.zeros(closedMat.size(), CvType.CV_8UC3);
+
+            MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
+            Rect[] boundRect = new Rect[contours.size()];
+            Point[] centers = new Point[contours.size()];
+            float[][] radius = new float[contours.size()][1];
+            for (int i = 0; i < contours.size(); i++) {
+                contoursPoly[i] = new MatOfPoint2f();
+                Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
+                boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
+                centers[i] = new Point();
+                Imgproc.minEnclosingCircle(contoursPoly[i], centers[i], radius[i]);
+            }
+            List<MatOfPoint> contoursPolyList = new ArrayList<>(contoursPoly.length);
+            for (MatOfPoint2f poly : contoursPoly) {
+                contoursPolyList.add(new MatOfPoint(poly.toArray()));
+            }
+            for (int i = 0; i < contours.size(); i++) {
+                Scalar color = new Scalar(0, 255, 0);
+                Imgproc.drawContours(drawing, contoursPolyList, i, color);
+                //Imgproc.rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
+                Imgproc.circle(drawing, centers[i], (int) radius[i][0], color, 2);
+                Imgproc.putText(drawing, "Points: " + contoursPoly[i].rows(), boundRect[i].tl(), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
+            }
 
             switch (stageToRenderToViewport)
             {
