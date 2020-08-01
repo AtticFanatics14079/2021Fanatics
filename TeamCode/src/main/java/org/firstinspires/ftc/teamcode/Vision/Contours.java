@@ -67,7 +67,10 @@ public class Contours extends LinearOpMode {
         Mat CannyMat = new Mat();
         Mat ClosedMat = new Mat();
         Mat hierarchy = new Mat();
-        Mat horizontalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5,5));
+        Mat gradX = new Mat();
+        Mat gradY = new Mat();
+        Mat result = new Mat();
+
         enum Stage
         {
             RAW,
@@ -116,15 +119,27 @@ public class Contours extends LinearOpMode {
              */
 
             rawMat = input;
-            black = new Mat(input.size(), input.type(), Scalar.all(0));
-            Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_BGR2GRAY);
-            Imgproc.GaussianBlur(grayMat, blurredMat, new Size(3,3),0,0);
-            Imgproc.Canny(blurredMat, CannyMat, 50, 150, 3, false);
-            input.copyTo(black, CannyMat);
-            System.out.println("1");
+            Imgproc.GaussianBlur(rawMat, rawMat, new Size(3,3),0,0);
+            Imgproc.cvtColor(rawMat,grayMat,Imgproc.COLOR_BGR2GRAY);
+            Imgproc.Sobel(grayMat,gradX, CvType.CV_16S,1,0,3,1,0, Core.BORDER_DEFAULT);
+            Imgproc.Sobel(grayMat,gradY, CvType.CV_16S,0,1,3,1,0, Core.BORDER_DEFAULT);
+            Core.convertScaleAbs(gradX,gradX);
+            Core.convertScaleAbs(gradY,gradY);
+            Core.addWeighted(gradX,0.5,gradY,0.5,0, result);
+
+            /*rawMat = input;
+            Imgproc.cvtColor(rawMat,rawMat,Imgproc.COLOR_BGR2YCrCb);
+            Imgproc.GaussianBlur(rawMat, grayMat, new Size(3,3),0,0);
+            Core.extractChannel(grayMat,grayMat, 0);
+            Imgproc.Sobel(grayMat,gradX, CvType.CV_16S,1,0,3,1,0, Core.BORDER_DEFAULT);
+            Imgproc.Sobel(grayMat,gradY, CvType.CV_16S,0,1,3,1,0, Core.BORDER_DEFAULT);
+            Core.convertScaleAbs(gradX,gradX);
+            Core.convertScaleAbs(gradY,gradY);
+            Core.addWeighted(gradX,0.5,gradY,0.5,0, result);
+             */
 
             Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(21,21), new Point(10,10));
-            Imgproc.morphologyEx(black,ClosedMat,3, element);
+            Imgproc.morphologyEx(result,ClosedMat,3, element);
             System.out.println("2");
             Imgproc.cvtColor(ClosedMat,ClosedMat, Imgproc.COLOR_RGB2GRAY);
 
@@ -165,14 +180,16 @@ public class Contours extends LinearOpMode {
                 case RAW: {
                     return rawMat;
                 }
+                /*
                 case BLUR: {
                     return blurredMat;
                 }
+                 */
                 case GRAY: {
                     return grayMat;
                 }
                 case CANNY: {
-                    return CannyMat;
+                    return result;
                 }
                 case CLOSED: {
                     return ClosedMat;
