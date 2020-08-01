@@ -39,7 +39,7 @@ public class CannnyEdge extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();//open camera
-        phoneCam.setPipeline(new SobelEdge.StageSwitchingPipeline());//different stages
+        phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
         phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC
         //width, height
         //width = height in this case, because camera is in portrait mode.
@@ -59,10 +59,11 @@ public class CannnyEdge extends LinearOpMode {
     static class StageSwitchingPipeline extends OpenCvPipeline
     {
         Mat rawMat = new Mat();
+        Mat blurredMat = new Mat();
         Mat grayMat = new Mat();
-        Mat detectedEdges = new Mat();
         Mat black = new Mat();
-        Mat closedMat = new Mat();
+        Mat CannyMat = new Mat();
+        Mat ClosedMat = new Mat();
         Mat hierarchy = new Mat();
 
 
@@ -72,8 +73,8 @@ public class CannnyEdge extends LinearOpMode {
             COOKED
         }
 
-        private SobelEdge.StageSwitchingPipeline.Stage stageToRenderToViewport = SobelEdge.StageSwitchingPipeline.Stage.RAW;
-        private SobelEdge.StageSwitchingPipeline.Stage[] stages = SobelEdge.StageSwitchingPipeline.Stage.values();
+        private StageSwitchingPipeline.Stage stageToRenderToViewport = StageSwitchingPipeline.Stage.RAW;
+        private StageSwitchingPipeline.Stage[] stages = StageSwitchingPipeline.Stage.values();
 
         @Override
         public void onViewportTapped()
@@ -99,53 +100,23 @@ public class CannnyEdge extends LinearOpMode {
         @Override
         public Mat processFrame(Mat input)
         {
+            System.out.println("1");
             rawMat = input;
             black = new Mat(input.size(), input.type(), Scalar.all(0));
             Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_BGR2GRAY);
-            Imgproc.GaussianBlur(grayMat, detectedEdges, new Size(3,3),0,0);
-            Imgproc.Canny(detectedEdges, detectedEdges, 50, 150, 3, false);
-            input.copyTo(black, detectedEdges);
-
-            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(21,21), new Point(10,10));
-            Imgproc.morphologyEx(black,closedMat,3, element);
-            System.out.println("2");
-            Imgproc.cvtColor(closedMat,closedMat, Imgproc.COLOR_RGB2GRAY);
-
-            List<MatOfPoint> contours = new ArrayList<>();
-            Imgproc.findContours(closedMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-            Mat drawing = Mat.zeros(closedMat.size(), CvType.CV_8UC3);
-
-            MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
-            Rect[] boundRect = new Rect[contours.size()];
-            Point[] centers = new Point[contours.size()];
-            float[][] radius = new float[contours.size()][1];
-            for (int i = 0; i < contours.size(); i++) {
-                contoursPoly[i] = new MatOfPoint2f();
-                Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
-                boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
-                centers[i] = new Point();
-                Imgproc.minEnclosingCircle(contoursPoly[i], centers[i], radius[i]);
-            }
-            List<MatOfPoint> contoursPolyList = new ArrayList<>(contoursPoly.length);
-            for (MatOfPoint2f poly : contoursPoly) {
-                contoursPolyList.add(new MatOfPoint(poly.toArray()));
-            }
-            for (int i = 0; i < contours.size(); i++) {
-                Scalar color = new Scalar(0, 255, 0);
-                Imgproc.drawContours(drawing, contoursPolyList, i, color);
-                //Imgproc.rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
-                Imgproc.circle(drawing, centers[i], (int) radius[i][0], color, 2);
-                Imgproc.putText(drawing, "Points: " + contoursPoly[i].rows(), boundRect[i].tl(), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
-            }
+            Imgproc.GaussianBlur(grayMat, blurredMat, new Size(3,3),0,0);
+            Imgproc.Canny(blurredMat, CannyMat, 50, 150, 3, false);
+            input.copyTo(black, CannyMat);
 
             switch (stageToRenderToViewport)
             {
                 case COOKED:
                 {
                     return black;
-                }
+                }.
                 default:
                 {
+                    System.out.println("default");
                     return input;
                 }
             }
