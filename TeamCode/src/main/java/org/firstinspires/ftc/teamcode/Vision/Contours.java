@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.CameraDevice;
 
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -31,7 +32,6 @@ public class Contours extends LinearOpMode {
     private final int cols = 480;
 
     OpenCvCamera phoneCam;
-    CameraDetect flashlight = new CameraDetect();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -41,9 +41,6 @@ public class Contours extends LinearOpMode {
         phoneCam.openCameraDevice();//open camera
         phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
         phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC
-
-        flashlight.instantCamera(hardwareMap);
-        CameraDevice.getInstance().setFlashTorchMode(true);
 
         //width, height
         //width = height in this case, because camera is in portrait mode.
@@ -63,16 +60,20 @@ public class Contours extends LinearOpMode {
     static class StageSwitchingPipeline extends OpenCvPipeline
     {
         Mat rawMat = new Mat();
+        Mat blurredMat = new Mat();
         Mat grayMat = new Mat();
+        Mat black = new Mat();
+        Mat CannyMat = new Mat();
+        Mat ClosedMat = new Mat();
         Mat hierarchy = new Mat();
-        Mat contoursMat = new Mat();
         Mat horizontalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5,5));
         enum Stage
         {
             RAW,
+            GRAY,
             BLUR,
-            DILATE,
             CANNY,
+            CLOSED,
             OUTPUT
         }
 
@@ -104,18 +105,22 @@ public class Contours extends LinearOpMode {
         public Mat processFrame(Mat input)
         {
             rawMat = input;
-            Imgproc.GaussianBlur(rawMat, rawMat, new Size(5,5),0,0);
-            Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_BGR2GRAY);
+            black = new Mat(input.size(), input.type(), Scalar.all(0));
+            Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_RGB2YCrCb);
+            Core.extractChannel(grayMat,grayMat, 0);
+            Imgproc.threshold(grayMat, grayMat, 155, 255, Imgproc.THRESH_BINARY);
+            Imgproc.GaussianBlur(grayMat, blurredMat, new Size(3,3),0,0);
             Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3));
-            Imgproc.Canny(grayMat, contoursMat, 100,300, 3, false);
+            Imgproc.Canny(blurredMat, CannyMat, 30,90, 3, false);
+            input.copyTo(black,CannyMat);
 
-            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_ELLIPSE, new Size(21,21),new Point(10,10));
-            Imgproc.morphologyEx(contoursMat,contoursMat,3, element);
-
+            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(21,21), new Point(10,10));
+            Imgproc.morphologyEx(black,ClosedMat,3, element);
+            Imgproc.cvtColor(ClosedMat,ClosedMat, Imgproc.COLOR_RGB2GRAY);
 
             List<MatOfPoint> contours = new ArrayList<>();
-            Imgproc.findContours(contoursMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-            Mat drawing = Mat.zeros(contoursMat.size(), CvType.CV_8UC3);
+            Imgproc.findContours(ClosedMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            Mat drawing = Mat.zeros(ClosedMat.size(), CvType.CV_8UC3);
 
             MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
             Rect[] boundRect = new Rect[contours.size()];
@@ -147,14 +152,20 @@ public class Contours extends LinearOpMode {
              */
 
             switch (stageToRenderToViewport) {
-                case BLUR: {
+                case RAW: {
                     return rawMat;
                 }
-                case DILATE: {
+                case BLUR: {
+                    return blurredMat;
+                }
+                case GRAY: {
                     return grayMat;
                 }
                 case CANNY: {
-                    return contoursMat;
+                    return CannyMat;
+                }
+                case CLOSED: {
+                    return ClosedMat;
                 }
                 case OUTPUT: {
                     return drawing;
