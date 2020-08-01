@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.Vision;
 
+import android.hardware.Camera;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.vuforia.CameraDevice;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
