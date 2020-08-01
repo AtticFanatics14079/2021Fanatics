@@ -105,15 +105,22 @@ public class Contours extends LinearOpMode {
         @Override
         public Mat processFrame(Mat input)
         {
-            rawMat = input;
+            /*rawMat = input;
             black = new Mat(input.size(), input.type(), Scalar.all(0));
             Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(grayMat,grayMat, 0);
             Imgproc.threshold(grayMat, grayMat, 155, 255, Imgproc.THRESH_BINARY);
             Imgproc.GaussianBlur(grayMat, blurredMat, new Size(3,3),0,0);
-            Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3));
             Imgproc.Canny(blurredMat, CannyMat, 30,90, 3, false);
             input.copyTo(black,CannyMat);
+             */
+
+            rawMat = input;
+            black = new Mat(input.size(), input.type(), Scalar.all(0));
+            Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_BGR2GRAY);
+            Imgproc.GaussianBlur(grayMat, blurredMat, new Size(3,3),0,0);
+            Imgproc.Canny(blurredMat, blurredMat, 50, 150, 3, false);
+            input.copyTo(black, blurredMat);
 
             Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(21,21), new Point(10,10));
             Imgproc.morphologyEx(black,ClosedMat,3, element);
