@@ -113,7 +113,7 @@ public class CannnyEdge extends LinearOpMode {
                 case COOKED:
                 {
                     return black;
-                }.
+                }
                 default:
                 {
                     System.out.println("default");

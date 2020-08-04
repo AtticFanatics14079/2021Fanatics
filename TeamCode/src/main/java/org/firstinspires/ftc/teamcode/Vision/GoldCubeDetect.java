@@ -3,11 +3,7 @@ package org.firstinspires.ftc.teamcode.Vision;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.vuforia.CameraDevice;
-import com.vuforia.Vuforia;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -29,7 +25,7 @@ import java.util.List;
 
 @Config
 @Autonomous
-public class Contours extends LinearOpMode {
+public class GoldCubeDetect extends LinearOpMode {
 
     private final int rows = 640;
     private final int cols = 480;
@@ -162,17 +158,8 @@ public class Contours extends LinearOpMode {
                 centers[i] = new Point();
                 Imgproc.minEnclosingCircle(contoursPoly[i], centers[i], radius[i]);
             }
-            List<MatOfPoint> contoursPolyList = new ArrayList<>(contoursPoly.length);
-            for (MatOfPoint2f poly : contoursPoly) {
-                contoursPolyList.add(new MatOfPoint(poly.toArray()));
-            }
-            for (int i = 0; i < contours.size(); i++) {
-                Scalar color = new Scalar(0, 255, 0);
-                Imgproc.drawContours(drawing, contoursPolyList, i, color);
-                //Imgproc.rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
-                Imgproc.circle(drawing, centers[i], (int) radius[i][0], color, 2);
-                Imgproc.putText(drawing, "Points: " + contoursPoly[i].rows(), boundRect[i].tl(), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
-            }
+
+            System.out.println(); //Something to measure distance
 
             /*for (int i = 0; i < contours.size(); i++) {
                 Scalar color = new Scalar(0, 255, 255);
