@@ -112,6 +112,12 @@ public class HoughCircles extends LinearOpMode {
                 int radius = (int) Math.round(c[2]);
                 Imgproc.circle(circleMat, center, radius, new Scalar(255,0,255), 3, 8, 0 );
                 Imgproc.putText(circleMat, "Radius: " + radius, center, Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
+
+                double distance = 0;
+                double circleRadius = 1.375;
+                distance = ((150- radius)/8.0)*1.375 ;
+                distance = distance/circleRadius;
+                Imgproc.putText(circleMat, "Distance: " + distance, center, Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
             }
             switch (stageToRenderToViewport)
             {

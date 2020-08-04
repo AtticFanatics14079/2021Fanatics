@@ -116,7 +116,7 @@ public class Contours extends LinearOpMode {
             Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(grayMat,grayMat, 0);
             Imgproc.GaussianBlur(grayMat, blurredMat, new Size(5,5),Imgproc.RETR_TREE,Imgproc.CHAIN_APPROX_SIMPLE);
-            Imgproc.threshold(blurredMat, blurredMat, 170, 255, Imgproc.THRESH_BINARY);
+            Imgproc.threshold(blurredMat, blurredMat, 165, 255, Imgproc.THRESH_BINARY);
             Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(19,19), new Point(10,10));
             Imgproc.morphologyEx(blurredMat, blurredMat,3, element);
             Imgproc.Canny(blurredMat, CannyMat, 30,90, 3, false);
