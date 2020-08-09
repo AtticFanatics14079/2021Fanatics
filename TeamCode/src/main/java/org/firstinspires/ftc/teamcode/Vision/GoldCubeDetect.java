@@ -145,7 +145,7 @@ public class GoldCubeDetect extends LinearOpMode {
             List<MatOfPoint> contours = new ArrayList<>();
             Imgproc.findContours(CannyMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
             Mat drawing = Mat.zeros(CannyMat.size(), CvType.CV_8UC3);
-            System.out.println(contours.size());
+            //System.out.println(contours.size());
 
             MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
             Rect[] boundRect = new Rect[contours.size()];
@@ -158,8 +158,25 @@ public class GoldCubeDetect extends LinearOpMode {
                 centers[i] = new Point();
                 Imgproc.minEnclosingCircle(contoursPoly[i], centers[i], radius[i]);
             }
-
-            System.out.println(); //Something to measure distance
+            List<MatOfPoint> contoursPolyList = new ArrayList<>(contoursPoly.length);
+            for (MatOfPoint2f poly : contoursPoly) {
+                contoursPolyList.add(new MatOfPoint(poly.toArray()));
+            }
+            if(contours.size() != 0) System.out.println(contoursPoly[0].toArray()[0] + " and " + contoursPoly[0].toArray()[contoursPoly[0].rows()/2]);
+            for (int i = 0; i < contours.size(); i++) {
+                System.out.println(contours.size());
+                Scalar color = new Scalar(0, 255, 0);
+                Imgproc.drawContours(drawing, contoursPolyList, i, color);
+                //Imgproc.rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
+                Imgproc.circle(drawing, centers[i], (int) radius[i][0], color, 2);
+                Imgproc.putText(drawing, "Points: " + contoursPoly[i].rows(), boundRect[i].tl(), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
+                for(int n = 0; n < contoursPoly[i].rows(); n++) {
+                    Imgproc.putText(drawing, "" + n, new Point(contoursPoly[i].toArray()[n].x, contoursPoly[i].toArray()[n].y), Imgproc.FONT_HERSHEY_DUPLEX, 0.5, new Scalar(255,0,0));
+                }
+                //Imgproc.putText(drawing, "C0", new Point(contoursPoly[i].toArray()[0].x, contoursPoly[i].toArray()[0].y), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
+                //Imgproc.putText(drawing, "C1", new Point(contoursPoly[i].toArray()[contoursPoly[i].rows()/2].x, contoursPoly[i].toArray()[contoursPoly[i].rows()/2].y), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
+                //if(i < contours.size() - 1) Imgproc.putText(drawing, "C1", new Point(contours.get(i + 1).toArray()[0].x, contours.get(i + 1).toArray()[0].y), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
+            }
 
             /*for (int i = 0; i < contours.size(); i++) {
                 Scalar color = new Scalar(0, 255, 255);
