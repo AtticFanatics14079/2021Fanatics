@@ -106,13 +106,14 @@ public class HoughCircles extends LinearOpMode {
             for (int x = 0; x < circles.cols(); x++) {
                 double[] c = circles.get(0, x);
                 Point center = new Point(Math.round(c[0]), Math.round(c[1]));
+                Point extra = new Point(center.x + 10, center.y +10);
                 // circle center
                 Imgproc.circle(circleMat, center, 1, new Scalar(0,100,100), 3, 8, 0 );
                 // circle outline
                 int radius = (int) Math.round(c[2]);
                 Imgproc.circle(circleMat, center, radius, new Scalar(255,0,255), 3, 8, 0 );
                 Imgproc.putText(circleMat, "Radius: " + radius, center, Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
-
+                double focalLength = 528.1075;
                 double distance = 0;
                 double circleRadius = 1.875;
                 distance = (circleRadius * 535) / radius;
