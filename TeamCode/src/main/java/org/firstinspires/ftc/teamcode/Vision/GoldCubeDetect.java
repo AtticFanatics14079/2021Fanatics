@@ -112,10 +112,10 @@ public class GoldCubeDetect extends LinearOpMode {
             Imgproc.cvtColor(rawMat, grayMat, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(grayMat,grayMat, 0);
             Imgproc.GaussianBlur(grayMat, blurredMat, new Size(5,5),Imgproc.RETR_TREE,Imgproc.CHAIN_APPROX_SIMPLE);
-            //Imgproc.threshold(blurredMat, blurredMat, 170, 255, Imgproc.THRESH_BINARY);
-            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(19,19), new Point(10,10));
+            Imgproc.threshold(blurredMat, blurredMat, 169, 255, Imgproc.THRESH_BINARY);
+            Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(13,13), new Point(10,10));
             Imgproc.morphologyEx(blurredMat, blurredMat,3, element);
-            Imgproc.Canny(blurredMat, CannyMat, 25,75, 3, false);
+            Imgproc.Canny(blurredMat, CannyMat, 30,90, 3, false);
             //input.copyTo(black,CannyMat);
 
             /*rawMat = input;
@@ -163,7 +163,7 @@ public class GoldCubeDetect extends LinearOpMode {
                 contoursPolyList.add(new MatOfPoint(poly.toArray()));
             }
             if(contours.size() != 0) System.out.println(contoursPoly[0].toArray()[0] + " and " + contoursPoly[0].toArray()[contoursPoly[0].rows()/2]);
-            for (int i = 0; i < contours.size(); i++) {
+            for (int i = 1; i < contours.size(); i++) {
                 double numberPoints = contoursPoly[i].rows() -1;
                 System.out.println(contours.size());
                 Scalar color = new Scalar(0, 255, 0);
@@ -172,14 +172,16 @@ public class GoldCubeDetect extends LinearOpMode {
                 Imgproc.circle(drawing, centers[i], (int) radius[i][0], color, 2);
                 for(int n = 1; n < contoursPoly[i].rows()-1; n++) {
                     Point SlopePoint = contoursPoly[i].toArray()[n];
-                    Imgproc.putText(drawing, "" + n, new Point(SlopePoint.x, SlopePoint.y), Imgproc.FONT_HERSHEY_DUPLEX, 0.5, new Scalar(255,0,0));
+                    //Imgproc.putText(drawing, "" + n, new Point(SlopePoint.x, SlopePoint.y), Imgproc.FONT_HERSHEY_DUPLEX, 0.5, new Scalar(255,0,0));
                     double Slope1 = (SlopePoint.y - contoursPoly[i].toArray()[n-1].y)/(SlopePoint.x - contoursPoly[i].toArray()[n-1].x);
                     double Slope2 = (SlopePoint.y - contoursPoly[i].toArray()[n+1].y)/(SlopePoint.x - contoursPoly[i].toArray()[n+1].x);
                     if(Math.abs(Slope1 - Slope2) < 10){
                         numberPoints--;
                     }
                 }
-                Imgproc.putText(drawing, "Points: " + numberPoints, boundRect[i].tl(), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
+                if(numberPoints >= 3 && numberPoints <= 5) {
+                    Imgproc.putText(drawing, "Square: Points= " + numberPoints, boundRect[i].tl(), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
+                }
 
                 //Imgproc.putText(drawing, "C0", new Point(contoursPoly[i].toArray()[0].x, contoursPoly[i].toArray()[0].y), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
                 //Imgproc.putText(drawing, "C1", new Point(contoursPoly[i].toArray()[contoursPoly[i].rows()/2].x, contoursPoly[i].toArray()[contoursPoly[i].rows()/2].y), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));

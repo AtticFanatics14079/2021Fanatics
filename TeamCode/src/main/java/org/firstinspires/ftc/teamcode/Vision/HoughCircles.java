@@ -99,9 +99,10 @@ public class HoughCircles extends LinearOpMode {
         public Mat processFrame(Mat input)
         {
             rawMat = input;
-            Imgproc.cvtColor(input, circleMat, Imgproc.COLOR_RGB2GRAY);
+            //Imgproc.cvtColor(input, circleMat, Imgproc.COLOR_RGB2GRAY);
+            Core.extractChannel(rawMat, circleMat, 0);
             Imgproc.medianBlur(circleMat, circleMat, 5);
-            Imgproc.HoughCircles(circleMat, circles, Imgproc.HOUGH_GRADIENT, 1.0, circleMat.rows()/16.0, 100.0, 32.0, 50, 100);
+            Imgproc.HoughCircles(circleMat, circles, Imgproc.HOUGH_GRADIENT, 1.0, circleMat.rows()/16.0, 270.0, 60.0, 10, 200);
             System.out.println("Houghcircles finished");
             for (int x = 0; x < circles.cols(); x++) {
                 double[] c = circles.get(0, x);
@@ -113,10 +114,10 @@ public class HoughCircles extends LinearOpMode {
                 int radius = (int) Math.round(c[2]);
                 Imgproc.circle(circleMat, center, radius, new Scalar(255,0,255), 3, 8, 0 );
                 Imgproc.putText(circleMat, "Radius: " + radius, center, Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
-                double focalLength = 528.1075;
+                double focalLength = 518.4;
                 double distance = 0;
                 double circleRadius = 1.875;
-                distance = (circleRadius * 535) / radius;
+                distance = (circleRadius * focalLength) / radius;
                 Imgproc.putText(circleMat, "Distance: " + distance, new Point(center.x + 10, center.y + 10), Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(255,0,0));
             }
             switch (stageToRenderToViewport)
