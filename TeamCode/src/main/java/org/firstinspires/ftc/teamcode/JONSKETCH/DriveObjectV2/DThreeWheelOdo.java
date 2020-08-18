@@ -1,10 +1,24 @@
 package org.firstinspires.ftc.teamcode.JONSKETCH.DriveObjectV2;
 
-public class DThreeWheelOdo implements Odometry, DriveObject{
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+public class DThreeWheelOdo implements Odometry, DriveObject {
+
+    DOdometryPod[] odoPods = new DOdometryPod[3];
 
     double x, y, heading;
     int partNum;
     DOThread thread = new NullThread();
+
+    ValueStorage vals;
+
+    public DThreeWheelOdo(double x, double y, double heading, ValueStorage vals, DOdometryPod[] odoPods){
+        this.x = x;
+        this.y = y;
+        this.heading = heading;
+        this.odoPods = odoPods;
+        this.vals = vals;
+    }
 
     public void set(double value) {
         //Do nothing

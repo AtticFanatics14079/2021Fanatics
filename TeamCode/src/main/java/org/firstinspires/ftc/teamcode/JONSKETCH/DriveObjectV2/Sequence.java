@@ -27,6 +27,6 @@ public class Sequence implements Runnable{
             sequence.run();
         }
         DOThread t = action.runAction();
-        while(t.isAlive()){} //Not sure this works
+        while(t != null && t.isAlive()){} //Accounts both for threads and single actions.
     }
 }

@@ -27,6 +27,6 @@ public class Sequence implements Runnable{
             sequence.run();
         }
         Thread t = action.runAction();
-        while(t.isAlive()){} //Not sure this works
+        while(t.isAlive()){} //Not sure if this works.
     }
 }
