@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.Arrays;
 
-public class OdometryThread extends Thread {
+public class OdometryThread extends Thread implements DOThread {
 
     private Odometry odo;
     private ValueStorage vals;
@@ -25,7 +25,7 @@ public class OdometryThread extends Thread {
         lastPos = lastEncoderVals = new double[]{0.0, 0.0, 0.0};
     }
 
-    public OdometryThread(Odometry odo, ValueStorage s, double[] dimensions, int x, int y, double heading, int inchesPerTick) {
+    public OdometryThread(Odometry odo, ValueStorage s, double[] dimensions, double x, double y, double heading, double inchesPerTick) {
         this.odo = odo;
         this.vals = s;
         this.dimensions = dimensions;

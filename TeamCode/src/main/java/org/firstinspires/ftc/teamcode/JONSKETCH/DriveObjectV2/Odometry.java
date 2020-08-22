@@ -12,5 +12,5 @@ public interface Odometry {
     double getY();
     double getHeading();
     int getPartNum();
-
+    void beginTracking();
 }

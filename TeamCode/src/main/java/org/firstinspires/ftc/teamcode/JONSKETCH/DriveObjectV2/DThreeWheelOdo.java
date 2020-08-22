@@ -4,20 +4,25 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class DThreeWheelOdo implements Odometry, DriveObject {
 
-    DOdometryPod[] odoPods = new DOdometryPod[3];
+    DOdometryPod[] odoPods;
 
-    double x, y, heading;
+    double x, y, heading, inchesPerTick;
     int partNum;
+
+    //First val is trackwith, second value is forward offset, third is auxiliary trackwidth
+    double[] dimensions;
     DOThread thread = new NullThread();
 
     ValueStorage vals;
 
-    public DThreeWheelOdo(double x, double y, double heading, ValueStorage vals, DOdometryPod[] odoPods){
+    public DThreeWheelOdo(double x, double y, double heading, ValueStorage vals, DOdometryPod[] odoPods, double inchesPerTick, double... dimensions){
         this.x = x;
         this.y = y;
         this.heading = heading;
         this.odoPods = odoPods;
         this.vals = vals;
+        this.dimensions = dimensions;
+        this.inchesPerTick = inchesPerTick;
     }
 
     public void set(double value) {
@@ -64,5 +69,10 @@ public class DThreeWheelOdo implements Odometry, DriveObject {
 
     public double getHeading() {
         return heading;
+    }
+
+    public void beginTracking() {
+        thread = new OdometryThread(this, vals, dimensions, x, y, heading, inchesPerTick);
+        thread.start();
     }
 }
