@@ -55,18 +55,24 @@ public class TurnToCircle extends LinearOpMode {
         //width, height
         //width = height in this case, because camera is in portrait mode.
 
+        config.servo.setPosition(0.85);
+
         waitForStart();
         //all of our movement jazz
         while (opModeIsActive()) {
+
             telemetry.addData("Height", rows);
             telemetry.addData("Width", cols);
+            telemetry.addData("Ball Pos", ballPos);
+            telemetry.addData("Servo Pos", config.servo.getPosition());
+
             if(ballPos == -1) config.servo.setPosition(config.servo.getPosition() + 0.01);
             else if(ballPos == 1) config.servo.setPosition(config.servo.getPosition() - 0.01);
 
             if(config.isPressed1() || config.isPressed2()) break;
 
             telemetry.update();
-            sleep(10);
+            sleep(200);
         }
     }
 
@@ -75,7 +81,6 @@ public class TurnToCircle extends LinearOpMode {
     {
         Mat rawMat = new Mat();
         Mat circleMat = new Mat();
-        Mat circles = new Mat();
         Mat gray = new Mat();
 
         enum Stage
@@ -110,18 +115,19 @@ public class TurnToCircle extends LinearOpMode {
         @Override
         public Mat processFrame(Mat input)
         {
+            Mat circles = new Mat();
             int[] circleSize;
             rawMat = input;
             circleMat = new Mat(input.size(), input.type(), Scalar.all(0));
             //Imgproc.cvtColor(input, circleMat, Imgproc.COLOR_RGB2GRAY);
             Core.extractChannel(rawMat, gray, 0);
             Imgproc.medianBlur(circleMat, circleMat, 5);
-            Imgproc.HoughCircles(gray, circles, Imgproc.HOUGH_GRADIENT, 1.0, circleMat.rows()/16.0, 210.0, 47.0, 10, 200);
+            Imgproc.HoughCircles(gray, circles, Imgproc.HOUGH_GRADIENT, 1.0, circleMat.rows()/16.0, 200.0, 47.0, 10, 200);
             input.copyTo(circleMat, gray);
             //System.out.println("Houghcircles finished");
             circleSize = new int[circles.cols()];
-            Imgproc.line(circleMat, new Point(200, 0), new Point(200, 640), new Scalar(255,0,255), 3, 8, 0 );
-            Imgproc.line(circleMat, new Point(280, 0), new Point(280, 640), new Scalar(255,0,255), 3, 8, 0 );
+            //Imgproc.line(circleMat, new Point(200, 0), new Point(200, 640), new Scalar(255,0,255), 3, 8, 0 );
+            //Imgproc.line(circleMat, new Point(280, 0), new Point(280, 640), new Scalar(255,0,255), 3, 8, 0 );
             for (int x = 0; x < circles.cols(); x++) {
                 double[] c = circles.get(0, x);
                 Point center = new Point(Math.round(c[0]), Math.round(c[1]));
@@ -148,11 +154,12 @@ public class TurnToCircle extends LinearOpMode {
             }
             if(largestIn != -1) {
                 Point newCenter = new Point(Math.round(circles.get(0, largestIn)[0]), Math.round(circles.get(0, largestIn)[1]));
-                Imgproc.putText(circleMat, "X: " + newCenter.x, newCenter, Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(0,0,0));
-                if(newCenter.x > 280) ballPos = -1;
-                else if(newCenter.x < 200) ballPos = 1;
+                Imgproc.putText(circleMat, "Y: " + newCenter.y, newCenter, Imgproc.FONT_HERSHEY_DUPLEX, 0.7, new Scalar(0,0,0));
+                if(newCenter.y < 300) ballPos = -1;
+                else if(newCenter.y > 340) ballPos = 1;
                 else ballPos = 0;
             }
+            else ballPos = 0;
             switch (stageToRenderToViewport)
             {
                 case RAW:
