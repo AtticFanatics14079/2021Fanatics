@@ -10,8 +10,6 @@ public class ValueStorage {
 
     private double[] runValues; //Values to for the robot to be set to (e.g. velocity for a DMotor).
 
-    public volatile boolean receivedDesiredVals = false;
-
     public void setup(int size){
         runValues = new double[size];
         hardwareValues = new double[size][];

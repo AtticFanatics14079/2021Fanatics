@@ -11,6 +11,6 @@ interface Configuration {
     ArrayList<DriveObject> hardware = new ArrayList<>();
 
     void Configure(HardwareMap hwMap, ValueStorage vals);
-    void setBulkCachingManual();
+    void setBulkCachingManual(boolean manual);
     void clearBulkCache();
 }

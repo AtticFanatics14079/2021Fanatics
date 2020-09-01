@@ -25,8 +25,8 @@ public class SampleConfiguration implements Configuration {
         hardware.add(frontLeft);
         hardware.add(frontRight);
         hardware.add(backRight);
-        frontRight.reverse();
-        backRight.reverse();
+        frontRight.reverse(true);
+        backRight.reverse(true);
         //Adding more later
 
         //Below are other configuration activities that are necessary for writing to file.
@@ -37,15 +37,16 @@ public class SampleConfiguration implements Configuration {
         }
     }
 
-    public void setBulkCachingManual(){
+    public void setBulkCachingManual(boolean manual){
         for (LynxModule module : allHubs) {
-            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            module.setBulkCachingMode(manual ? LynxModule.BulkCachingMode.MANUAL : LynxModule.BulkCachingMode.AUTO);
         }
     }
 
     public void clearBulkCache(){
         for (LynxModule module : allHubs) {
-            module.clearBulkCache();
+            if(module.getBulkCachingMode() == LynxModule.BulkCachingMode.MANUAL)
+                module.clearBulkCache();
         }
     }
 }
